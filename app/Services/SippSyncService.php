@@ -41,35 +41,40 @@ class SippSyncService
                 return $syncedCount;
             }
 
-            // Otherwise, fetch schedules for the next 7 days (1 week)
+            // Otherwise, fetch schedules for the next 10 days
             $failedDates = [];
-            for ($i = 0; $i < 7; $i++) {
+            $jar = new \GuzzleHttp\Cookie\CookieJar();
+            for ($i = 0; $i < 10; $i++) {
                 $dateStr = now()->addDays($i)->format('d/m/Y');
                 $url = "https://sipp.ptun-bandarlampung.go.id/list_jadwal_sidang/search/1/{$dateStr}";
                 
                 try {
                     // Increased timeout to 30 seconds for reliability
-                    $response = Http::timeout(30)->get($url);
+                    $response = Http::withHeaders([
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                    ])->withOptions([
+                        'cookies' => $jar
+                    ])->timeout(30)->get($url);
 
                     if (!$response->successful()) {
                         throw new \Exception("Status code: " . $response->status());
                     }
 
                     $dayHtml = $response->body();
-                    $syncedCount += $this->parseAndStoreHtml($dayHtml);
+                    $syncedCount += $this->parseAndStoreHtml($dayHtml, $jar, $url);
                 } catch (\Exception $dateEx) {
                     Log::warning("SippSyncService: Gagal sinkronisasi tanggal {$dateStr}. Error: " . $dateEx->getMessage());
                     $failedDates[] = $dateStr;
                 }
             }
 
-            // If ALL 7 days failed, throw a general exception to log as a failure
-            if (count($failedDates) === 7) {
-                throw new \Exception("Gagal menghubungi SIPP untuk seluruh 7 hari pencarian.");
+            // If ALL 10 days failed, throw a general exception to log as a failure
+            if (count($failedDates) === 10) {
+                throw new \Exception("Gagal menghubungi SIPP untuk seluruh 10 hari pencarian.");
             }
 
             // Log details of success and any failed dates
-            $keterangan = "Berhasil sinkronisasi {$syncedCount} jadwal sidang dari SIPP untuk 7 hari ke depan.";
+            $keterangan = "Berhasil sinkronisasi {$syncedCount} jadwal sidang dari SIPP untuk 10 hari ke depan.";
             if (!empty($failedDates)) {
                 $keterangan .= " (Gagal pada tanggal: " . implode(', ', $failedDates) . ")";
             }
@@ -105,7 +110,7 @@ class SippSyncService
      * @param string $html
      * @return int Number of parsed and stored rows.
      */
-    public function parseAndStoreHtml(string $html): int
+    public function parseAndStoreHtml(string $html, ?\GuzzleHttp\Cookie\CookieJar $jar = null, ?string $refererUrl = null): int
     {
         if (empty(trim($html))) {
             return 0;
@@ -121,7 +126,7 @@ class SippSyncService
         $rows = $table->filter('tbody tr');
         $syncedCount = 0;
 
-        $rows->each(function (Crawler $row, $index) use (&$syncedCount) {
+        $rows->each(function (Crawler $row, $index) use (&$syncedCount, $jar, $refererUrl) {
             // Skip the header row (typically the first row)
             if ($index === 0) {
                 return;
@@ -175,6 +180,54 @@ class SippSyncService
             // Determine jenis sidang (Online if electronic room, else Offline)
             $jenisSidang = strpos(strtolower($ruangRaw), 'elektronik') !== false ? 'Online' : 'Offline';
 
+            // Extract details from details page if available
+            $jenisPerkara = null;
+            $pihak = null;
+            $sidangKeliling = $cols->count() >= 4 ? trim($cols->eq(3)->text()) : 'Tidak';
+
+            if ($jar && $refererUrl && $cols->count() >= 7) {
+                $detailLink = $cols->eq(6)->filter('a');
+                if ($detailLink->count() > 0) {
+                    $onclick = $detailLink->attr('onclick');
+                    if (preg_match("/detilSidang\('([^']+)'\)/", $onclick, $matches)) {
+                        $idPerkara = $matches[1];
+                        $detailUrl = "https://sipp.ptun-bandarlampung.go.id/detil_jadwal_sidang/{$idPerkara}";
+
+                        try {
+                            $detailResponse = Http::withHeaders([
+                                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                                'X-Requested-With' => 'XMLHttpRequest',
+                                'Referer' => $refererUrl
+                            ])->withOptions([
+                                'cookies' => $jar,
+                                'allow_redirects' => true,
+                            ])->timeout(10)->get($detailUrl);
+
+                            if ($detailResponse->successful()) {
+                                $detailHtml = $detailResponse->body();
+                                $detailCrawler = new Crawler($detailHtml);
+                                
+                                $details = [];
+                                $detailCrawler->filter('#infoPerkara tr')->each(function (Crawler $dRow) use (&$details) {
+                                    $dCols = $dRow->filter('td');
+                                    if ($dCols->count() >= 2) {
+                                        $label = trim($dCols->eq(0)->text());
+                                        $val = trim($dCols->eq(1)->text());
+                                        $details[$label] = $val;
+                                    }
+                                });
+
+                                $jenisPerkara = $details['Jenis Perkara'] ?? null;
+                                $pihak = $details['Pihak'] ?? null;
+                                $sidangKeliling = $details['Sidang Keliling'] ?? $sidangKeliling;
+                            }
+                        } catch (\Exception $ex) {
+                            Log::warning("SippSyncService: Gagal sinkronisasi detail jadwal $nomorPerkara. Error: " . $ex->getMessage());
+                        }
+                    }
+                }
+            }
+
             // 3. Save JadwalSidang
             JadwalSidang::updateOrCreate(
                 [
@@ -188,6 +241,9 @@ class SippSyncService
                     'jenis_sidang' => $jenisSidang,
                     'sumber_data' => 'SIPP',
                     'terakhir_sinkron' => now(),
+                    'jenis_perkara' => $jenisPerkara,
+                    'pihak' => $pihak,
+                    'sidang_keliling' => $sidangKeliling,
                 ]
             );
 

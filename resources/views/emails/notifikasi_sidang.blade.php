@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Persidangan PTUN Jakarta</title>
+    <title>Monitoring Persidangan PTUN Bandar Lampung</title>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -137,7 +137,7 @@
         <div class="container">
             <div class="header">
                 <h1>MONITORING PERSIDANGAN</h1>
-                <p>Pengadilan Tata Usaha Negara Jakarta</p>
+                <p>Pengadilan Tata Usaha Negara Bandar Lampung</p>
             </div>
             
             <div class="content">
@@ -170,8 +170,8 @@
             </div>
             
             <div class="footer">
-                <p>Surat elektronik ini dikirimkan secara otomatis oleh Sistem Absensi PTUN Jakarta.</p>
-                <p>&copy; 2026 PTUN Jakarta. Semua Hak Dilindungi.</p>
+                <p>Surat elektronik ini dikirimkan secara otomatis oleh Sistem Absensi PTUN Bandar Lampung.</p>
+                <p>&copy; 2026 PTUN Bandar Lampung. Semua Hak Dilindungi.</p>
             </div>
         </div>
     </div>

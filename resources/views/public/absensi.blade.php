@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Mandiri Sidang - PTUN Jakarta</title>
+    <title>Absensi Mandiri Sidang - PTUN Bandar Lampung</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -13,16 +13,18 @@
     <!-- Custom CSS -->
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
 </head>
-<body class="gateway-bg" style="min-height: 100vh; display: block; overflow-y: auto; padding: 20px 0;">
+<body class="gateway-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
     <div class="container">
         <div class="absensi-container">
             
             <!-- Logo Portal -->
             <div class="text-center mb-4">
-                <a href="{{ route('portal') }}" class="text-decoration-none text-white d-inline-flex align-items-center gap-2">
-                    <i class="bi bi-balance2 fs-3 text-success bg-white px-2.5 py-1.5 rounded-circle shadow"></i>
-                    <span class="fw-bold tracking-wider fs-4">PTUN JAKARTA</span>
+                <a href="{{ route('portal') }}" class="text-decoration-none text-white d-inline-flex align-items-center gap-3">
+                    <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 55px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));">
+                    <span class="fw-bold tracking-wider fs-4 text-white" style="letter-spacing: 0.5px;">PTUN BANDAR LAMPUNG</span>
                 </a>
             </div>
 
@@ -134,8 +136,8 @@
                 </div>
             </div>
 
-            <div class="text-center mt-5 text-white-50 small">
-                &copy; 2026 Pengadilan Tata Usaha Negara Jakarta. Hak Cipta Dilindungi.
+            <div class="mt-4 footer-text">
+                <span><a href="{{ route('login') }}" style="color: inherit; text-decoration: none; cursor: default;">&copy;</a> 2026 Pengadilan Tata Usaha Negara Bandar Lampung. Semua Hak Dilindungi.</span>
             </div>
         </div>
     </div>

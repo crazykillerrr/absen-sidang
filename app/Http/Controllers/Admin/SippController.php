@@ -20,9 +20,9 @@ class SippController extends Controller
         $lastLog = SinkronisasiLog::orderBy('waktu_sinkronisasi', 'desc')->first();
         $totalSchedules = JadwalSidang::where('sumber_data', 'SIPP')->count();
         
-        // Paginate SIPP-sourced schedules
+                // Paginate SIPP-sourced schedules
         $schedules = JadwalSidang::where('sumber_data', 'SIPP')
-            ->with(['perkara', 'ruangSidang'])
+            ->with(['perkara', 'ruangSidang', 'pihakSidangs.kehadiran'])
             ->orderBy('tanggal_sidang', 'desc')
             ->orderBy('jam_sidang', 'asc')
             ->paginate(10, ['*'], 'schedules_page');

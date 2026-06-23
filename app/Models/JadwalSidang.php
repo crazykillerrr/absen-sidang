@@ -23,6 +23,9 @@ class JadwalSidang extends Model
         'jenis_sidang',
         'sumber_data',
         'terakhir_sinkron',
+        'jenis_perkara',
+        'pihak',
+        'sidang_keliling',
     ];
 
     protected $casts = [

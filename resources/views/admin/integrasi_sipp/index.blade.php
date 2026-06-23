@@ -111,34 +111,104 @@
                         <thead>
                             <tr>
                                 <th class="border-0">No</th>
+                                <th class="border-0">Waktu & Jenis</th>
                                 <th class="border-0">Nomor Perkara</th>
                                 <th class="border-0">Agenda</th>
-                                <th class="border-0">Tanggal</th>
-                                <th class="border-0">Jam</th>
-                                <th class="border-0 text-center">Sumber</th>
+                                <th class="border-0">Ruang Sidang</th>
+                                <th class="border-0">Litigant (Pihak)</th>
+                                <th class="border-0">Terakhir Sinkron</th>
+                                <th class="border-0 text-center" style="width: 220px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($schedules as $index => $sch)
+                                @php
+                                    $totalPihak = $sch->pihakSidangs->count();
+                                    $hadirPihak = $sch->pihakSidangs->filter(function($p) { return $p->kehadiran; })->count();
+                                    $lengkap = ($totalPihak > 0 && $hadirPihak === $totalPihak);
+                                    
+                                    $tanggal = $sch->tanggal_sidang instanceof \Carbon\Carbon 
+                                        ? $sch->tanggal_sidang->format('d-m-Y') 
+                                        : \Carbon\Carbon::parse($sch->tanggal_sidang)->format('d-m-Y');
+                                @endphp
                                 <tr>
                                     <td>{{ $schedules->firstItem() + $index }}</td>
                                     <td>
-                                        <span class="fw-bold" style="color: var(--primary-color);">{{ $sch->perkara->nomor_perkara }}</span>
-                                    </td>
-                                    <td>{{ $sch->agenda_sidang }}</td>
-                                    <td>
-                                        <strong>{{ $sch->tanggal_sidang instanceof \Carbon\Carbon ? $sch->tanggal_sidang->format('d-m-Y') : \Carbon\Carbon::parse($sch->tanggal_sidang)->format('d-m-Y') }}</strong>
+                                        <strong class="d-block text-dark">{{ $tanggal }}</strong>
+                                        <span class="badge bg-light text-primary border mb-1"><i class="bi bi-clock me-1"></i>{{ substr($sch->jam_sidang, 0, 5) }} WIB</span>
+                                        <small class="text-secondary d-block">{{ $sch->jenis_sidang }}</small>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-primary border"><i class="bi bi-clock me-1"></i>{{ substr($sch->jam_sidang, 0, 5) }} WIB</span>
+                                        <span class="fw-bold d-block" style="color: var(--primary-color);">{{ $sch->perkara->nomor_perkara }}</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-0.5 small mt-1">SIPP</span>
                                     </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 fw-semibold">{{ $sch->sumber_data }}</span>
+                                    <td>
+                                        <span class="text-wrap d-block" style="max-width: 250px;">{{ $sch->agenda_sidang }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">{{ $sch->ruangSidang->nama_ruang }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <div class="progress flex-grow-1" style="height: 6px; min-width: 80px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $totalPihak > 0 ? ($hadirPihak / $totalPihak) * 100 : 0 }}%"></div>
+                                            </div>
+                                            <span class="small fw-semibold">{{ $hadirPihak }}/{{ $totalPihak }}</span>
+                                        </div>
+                                        <span class="small text-muted d-block">
+                                            @if ($totalPihak === 0)
+                                                <span class="text-secondary">Pihak kosong</span>
+                                            @elseif ($lengkap)
+                                                <span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>Hadir Lengkap</span>
+                                            @else
+                                                <span class="text-warning fw-medium">Belum lengkap</span>
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="small text-secondary d-block">
+                                            {{ $sch->terakhir_sinkron ? \Carbon\Carbon::parse($sch->terakhir_sinkron)->translatedFormat('d M Y') : '-' }}
+                                        </span>
+                                        <small class="text-muted d-block">
+                                            {{ $sch->terakhir_sinkron ? \Carbon\Carbon::parse($sch->terakhir_sinkron)->format('H:i') . ' WIB' : '' }}
+                                        </small>
+                                    </td>
+                                                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <button type="button" 
+                                                class="btn btn-sm btn-outline-info border-0 rounded-circle p-2 btn-detail" 
+                                                title="Detil Sidang SIPP"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#detailSidangModal"
+                                                data-nomor-perkara="{{ $sch->perkara->nomor_perkara }}"
+                                                data-jenis-perkara="{{ $sch->jenis_perkara ?? 'Lain-Lain' }}"
+                                                data-pihak="{{ $sch->pihak ?? 'Belum terdata di SIPP' }}"
+                                                data-hari-tanggal="{{ \Carbon\Carbon::parse($sch->tanggal_sidang)->translatedFormat('l, d M Y') }}"
+                                                data-jam="{{ substr($sch->jam_sidang, 0, 5) }} WIB s/d Selesai"
+                                                data-agenda="{{ $sch->agenda_sidang }}"
+                                                data-sidang-keliling="{{ $sch->sidang_keliling ?? 'Tidak' }}"
+                                                data-ruang="{{ $sch->ruangSidang->nama_ruang }}">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <a href="{{ route('admin.pihak-sidang.index', $sch->id) }}" class="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-semibold small" title="Kelola Litigant/Pihak">
+                                                <i class="bi bi-people me-1"></i>Litigant ({{ $totalPihak }})
+                                            </a>
+                                            <a href="{{ route('admin.jadwal-sidang.edit', $sch->id) }}" class="btn btn-sm btn-outline-primary border-0 rounded-circle p-2" title="Edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form action="{{ route('admin.jadwal-sidang.destroy', $sch->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal sidang ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2" title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="8" class="text-center text-muted py-5">
                                         <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
                                         Belum ada data jadwal sidang yang disinkronkan dari SIPP.
                                     </td>
@@ -211,8 +281,81 @@
     </div>
 </div>
 
+<!-- Modal Detil Jadwal Sidang SIPP -->
+<div class="modal fade" id="detailSidangModal" tabindex="-1" aria-labelledby="detailSidangModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-success text-white text-center py-4 position-relative">
+                <h4 class="modal-title fw-bold m-0" id="detailSidangModalLabel">Detil Jadwal Sidang</h4>
+                <button type="button" class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered mb-0" style="font-size: 15px;">
+                        <tbody>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="width: 35%; --bs-bg-opacity: .85;">Nomor Perkara</th>
+                                <td id="modal-nomor-perkara" class="py-3 px-4 fw-semibold text-dark"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Jenis Perkara</th>
+                                <td id="modal-jenis-perkara" class="py-3 px-4 text-secondary"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Pihak</th>
+                                <td id="modal-pihak" class="py-3 px-4 text-dark text-wrap" style="line-height: 1.6;"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Hari dan Tanggal Sidang</th>
+                                <td id="modal-hari-tanggal" class="py-3 px-4 text-secondary"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Jam Sidang</th>
+                                <td id="modal-jam" class="py-3 px-4 text-secondary"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Agenda</th>
+                                <td id="modal-agenda" class="py-3 px-4 text-dark"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Sidang Keliling</th>
+                                <td id="modal-sidang-keliling" class="py-3 px-4 text-secondary"></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-success text-white py-3 px-4" style="--bs-bg-opacity: .85;">Ruang Sidang</th>
+                                <td id="modal-ruang" class="py-3 px-4 fw-semibold text-dark"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light justify-content-center border-0 py-3">
+                <button type="button" class="btn btn-success px-5 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Handle detail button clicks to populate modal
+        const detailButtons = document.querySelectorAll('.btn-detail');
+        detailButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('modal-nomor-perkara').innerText = this.getAttribute('data-nomor-perkara');
+                document.getElementById('modal-jenis-perkara').innerText = this.getAttribute('data-jenis-perkara');
+                document.getElementById('modal-pihak').innerText = this.getAttribute('data-pihak');
+                document.getElementById('modal-hari-tanggal').innerText = this.getAttribute('data-hari-tanggal');
+                document.getElementById('modal-jam').innerText = this.getAttribute('data-jam');
+                document.getElementById('modal-agenda').innerText = this.getAttribute('data-agenda');
+                document.getElementById('modal-sidang-keliling').innerText = this.getAttribute('data-sidang-keliling');
+                document.getElementById('modal-ruang').innerText = this.getAttribute('data-ruang');
+            });
+        });
+
         const form = document.getElementById('syncForm');
         const button = document.getElementById('btnSync');
         const icon = document.getElementById('iconSync');

@@ -189,6 +189,16 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Dynamically retrieve theme colors from CSS variables
+    const getThemeColor = (variableName, fallback) => {
+        return window.getComputedStyle(document.documentElement).getPropertyValue(variableName).trim() || fallback;
+    };
+
+    const textSecondary = getThemeColor('--text-secondary', '#566a5e');
+    const primaryColor = getThemeColor('--primary-color', '#0c3e26');
+    const accentGold = getThemeColor('--accent-gold', '#aa841c');
+    const borderColor = getThemeColor('--border-color', 'rgba(12, 62, 38, 0.06)');
+
     // Config Chart 1: Kehadiran per Hari
     const labelsHari = {!! json_encode($kehadiranPerHariLabels) !!};
     const dataHari = {!! json_encode($kehadiranPerHariData) !!};
@@ -201,12 +211,12 @@
             datasets: [{
                 label: 'Jumlah Hadir',
                 data: dataHari,
-                borderColor: '#0b2a49',
-                backgroundColor: 'rgba(11, 42, 73, 0.05)',
+                borderColor: primaryColor,
+                backgroundColor: 'rgba(12, 62, 38, 0.05)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#00a896',
+                pointBackgroundColor: accentGold,
                 pointBorderColor: '#ffffff',
                 pointHoverRadius: 7
             }]
@@ -220,11 +230,11 @@
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { stepSize: 1, color: '#64748b' },
-                    grid: { color: 'rgba(0,0,0,0.05)' }
+                    ticks: { stepSize: 1, color: textSecondary, font: { family: 'Outfit' } },
+                    grid: { color: borderColor }
                 },
                 x: {
-                    ticks: { color: '#64748b' },
+                    ticks: { color: textSecondary, font: { family: 'Outfit' } },
                     grid: { display: false }
                 }
             }
@@ -238,7 +248,8 @@
     const ctxAgenda = document.getElementById('chartKehadiranPerAgenda').getContext('2d');
     if (labelsAgenda.length === 0) {
         // Draw empty text if no data
-        ctxAgenda.font = "14px Poppins";
+        ctxAgenda.font = "14px Outfit";
+        ctxAgenda.fillStyle = textSecondary;
         ctxAgenda.textAlign = "center";
         ctxAgenda.fillText("Belum ada data kehadiran berdasarkan agenda.", 150, 150);
     } else {
@@ -249,15 +260,15 @@
                 datasets: [{
                     data: dataAgenda,
                     backgroundColor: [
-                        '#0b2a49',
-                        '#00a896',
-                        '#f59e0b',
-                        '#ef4444',
-                        '#8b5cf6',
-                        '#ec4899'
+                        '#0c3e26',
+                        '#aa841c',
+                        '#0d9488',
+                        '#d97706',
+                        '#10b981',
+                        '#f59e0b'
                     ],
                     borderWidth: 2,
-                    borderColor: '#ffffff'
+                    borderColor: getThemeColor('--bg-secondary', '#ffffff')
                 }]
             },
             options: {
@@ -268,8 +279,8 @@
                         position: 'bottom',
                         labels: {
                             boxWidth: 12,
-                            font: { family: 'Poppins', size: 11 },
-                            color: '#64748b'
+                            font: { family: 'Outfit', size: 11 },
+                            color: textSecondary
                         }
                     }
                 },

@@ -21,7 +21,7 @@
                     <!-- Nomor Perkara -->
                     <div class="col-md-8 col-12 mb-3">
                         <label for="nomor_perkara" class="form-label fw-semibold">Nomor Perkara</label>
-                        <input type="text" name="nomor_perkara" id="nomor_perkara" class="form-control form-control-custom @error('nomor_perkara') is-invalid @enderror" placeholder="Contoh: 120/G/2026/PTUN.JKT" value="{{ old('nomor_perkara') }}" required>
+                        <input type="text" name="nomor_perkara" id="nomor_perkara" class="form-control form-control-custom @error('nomor_perkara') is-invalid @enderror" placeholder="Contoh: 120/G/2026/PTUN.BDL" value="{{ old('nomor_perkara') }}" required>
                         @error('nomor_perkara')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

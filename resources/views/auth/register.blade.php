@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Admin Baru - PTUN Jakarta</title>
+    <title>Daftar Admin Baru - PTUN Bandar Lampung</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -14,16 +14,18 @@
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
 </head>
 <body class="gateway-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-    <div class="container">
+    <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-5">
                 
                 <div class="text-center mb-4">
-                    <a href="{{ route('portal') }}" class="text-decoration-none text-white">
-                        <i class="bi bi-balance2 fs-1 text-success bg-white px-3 py-2 rounded-circle shadow-lg mb-2"></i>
-                        <h2 class="fw-bold mt-2">PTUN JAKARTA</h2>
-                        <p class="text-white-50">Registrasi Akun Petugas</p>
+                    <a href="{{ route('portal') }}" class="text-decoration-none text-white d-inline-flex flex-column align-items-center">
+                        <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 100px; width: auto; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));" class="mb-3">
+                        <h2 class="fw-bold mt-1 text-uppercase fs-4">PTUN BANDAR LAMPUNG</h2>
+                        <p class="text-white-50 mb-0 small">Registrasi Akun Petugas</p>
                     </a>
                 </div>
 
@@ -80,14 +82,17 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-pill fw-semibold shadow-sm mb-3">
+                        <button type="submit" class="btn btn-success w-100 py-2.5 rounded-pill fw-semibold shadow-sm mb-3">
                             <i class="bi bi-person-plus me-2"></i>Daftarkan Akun
                         </button>
                         
                         <div class="text-center">
-                            <span class="small text-muted">Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">Masuk disini</a></span>
+                            <span class="small text-muted">Sudah punya akun? <a href="{{ route('login') }}" class="text-decoration-none fw-semibold text-success">Masuk disini</a></span>
                         </div>
                     </form>
+                </div>
+                <div class="mt-4 footer-text">
+                    <span>&copy; 2026 Pengadilan Tata Usaha Negara Bandar Lampung. Semua Hak Dilindungi.</span>
                 </div>
 
             </div>

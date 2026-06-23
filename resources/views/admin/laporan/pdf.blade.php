@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Kehadiran Sidang PTUN Jakarta</title>
+    <title>Laporan Kehadiran Sidang PTUN Bandar Lampung</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -84,14 +84,14 @@
 <body>
 
     <div class="header">
-        <h1 class="logo-title">PENGADILAN TATA USAHA NEGARA JAKARTA</h1>
+        <h1 class="logo-title">PENGADILAN TATA USAHA NEGARA BANDAR LAMPUNG</h1>
         <p class="logo-subtitle">Sistem Absensi & Kehadiran Sidang Pihak Berperkara Berbasis QR Code</p>
     </div>
 
     <table class="meta">
         <tr>
             <td style="width: 120px; font-weight: bold;">Jenis Dokumen</td>
-            <td>: Laporan Kehadiran Persidangan PTUN Jakarta</td>
+            <td>: Laporan Kehadiran Persidangan PTUN Bandar Lampung</td>
             <td style="text-align: right; font-weight: bold;">Tanggal Unduh</td>
             <td style="text-align: right; width: 120px;">: {{ date('d-m-Y H:i') }} WIB</td>
         </tr>
@@ -156,8 +156,8 @@
 
     <div class="footer">
         <div class="signature-section">
-            <p>Jakarta, {{ \Carbon\Carbon::today()->translatedFormat('d F Y') }}</p>
-            <p style="margin-bottom: 60px;">Petugas Absensi PTUN Jakarta,</p>
+            <p>Bandar Lampung, {{ \Carbon\Carbon::today()->translatedFormat('d F Y') }}</p>
+            <p style="margin-bottom: 60px;">Petugas Absensi PTUN Bandar Lampung,</p>
             <p style="text-decoration: underline; font-weight: bold;">{{ Auth::user()->name ?? 'Administrator' }}</p>
             <p style="color: #666666;">NIP. 19920815 201801 1 002</p>
         </div>

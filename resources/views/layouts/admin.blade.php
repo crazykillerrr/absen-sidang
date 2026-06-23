@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - Admin PTUN Jakarta</title>
+    <title>@yield('title') - Admin PTUN Bandar Lampung</title>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -39,9 +39,9 @@
         <!-- Sidebar Navigation -->
         <nav id="sidebar">
             <div class="sidebar-header d-flex align-items-center justify-content-between">
-                <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
-                    <i class="bi bi-balance2 text-success fs-3"></i>
-                    <span class="fw-bold fs-5 text-uppercase tracking-wider text-primary">PTUN JKT</span>
+                <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
+                    <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
+                    <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">PTUN BDL</span>
                 </a>
                 <button type="button" id="sidebarCollapseMobile" class="btn d-md-none border-0 text-secondary">
                     <i class="bi bi-x-lg fs-4"></i>
@@ -111,8 +111,8 @@
                 </li>
             </ul>
 
-            <div class="px-4 py-3 border-top mt-auto" style="background-color: var(--bg-secondary);">
-                <span class="small text-muted d-block">&copy; PTUN Jakarta 2026</span>
+            <div class="px-4 py-3 border-top mt-auto" style="border-top: 1px solid rgba(255, 255, 255, 0.07) !important; background: transparent;">
+                <span class="small d-block" style="color: #829a8f;">&copy; PTUN Bandar Lampung 2026</span>
             </div>
         </nav>
 
