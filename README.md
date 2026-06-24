@@ -47,67 +47,59 @@ Sistem ini didesain secara modern dengan skema warna hijau-emas khas institusi p
 
 ---
 
-## 🔧 Panduan Instalasi & Konfigurasi
+## 🚀 Panduan Deployment ke Hosting
 
-### 1. Clone Project
-Letakkan repositori ini di dalam direktori web server lokal Anda (misal pada Laragon: `C:\laragon\www\absen-sidang`).
+### 1. Unggah Source Code
+Unggah seluruh source code proyek ini ke direktori web server hosting Anda (misalnya `public_html` atau root direktori VPS). Pastikan direktori seperti `/vendor`, `/node_modules`, dan berkas `.env` tidak ikut diunggah.
 
-### 2. Pasang Dependensi
-Jalankan composer untuk memasang seluruh pustaka PHP yang dideklarasikan:
+### 2. Konfigurasi Environment Variables
+Konfigurasikan Environment Variables pada panel hosting atau server Anda dengan merujuk pada template berkas `.env.example`. Masukkan kredensial database PostgreSQL, APP_KEY yang valid, serta token WhatsApp Fonnte API (`FONNTE_TOKEN` & `FONNTE_URL`) Anda.
+
+### 3. Pasang Dependensi & Build Assets
+Jalankan perintah berikut di direktori root proyek via SSH/Terminal hosting:
 ```bash
-composer install
+composer install --no-dev --optimize-autoloader
+npm install
+npm run build
 ```
+*(Catatan: Jika hosting Anda tidak menyediakan akses terminal/SSH, pasang dependensi dan lakukan build asset secara lokal terlebih dahulu, kemudian unggah folder `vendor` dan `public/build` ke hosting).*
 
-### 3. Konfigurasi Lingkungan (`.env`)
-Salin berkas konfigurasi sampel menjadi berkas `.env` aktif:
+### 4. Migrasi Skema Database
+Jalankan migrasi tabel database di server hosting:
 ```bash
-cp .env.example .env
+php artisan migrate --force
 ```
-Buka berkas `.env` dan sesuaikan kredensial PostgreSQL serta token WhatsApp Gateway Fonnte Anda:
-```env
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=absen_sidang
-DB_USERNAME=postgres
-DB_PASSWORD=password_postgres_anda
-
-# Integrasi API Fonnte
-FONNTE_TOKEN=isi_token_fonnte_anda
-FONNTE_URL=https://api.fonnte.com/send
-```
-*Catatan: Pastikan ekstensi `pdo_pgsql` dan `pgsql` telah diaktifkan di setelan `php.ini` server web lokal Anda.*
-
-### 4. Migrasi Skema & Seeding Database
-Jalankan migrasi tabel beserta penyuntikan data dummy pengujian awal:
+Jika Anda perlu mengisi data referensi dasar ke database, jalankan seeder:
 ```bash
-php artisan migrate:fresh --seed
+php artisan db:seed --force
 ```
 
-### 5. Nyalakan Server
-Jalankan aplikasi di server pengembangan lokal:
+### 5. Atur Hak Akses Direktori (Permissions)
+Pastikan direktori berikut memiliki hak akses tulis (write permission) oleh web server:
 ```bash
-php artisan serve
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
 ```
-Buka alamat `http://127.0.0.1:8000` pada peramban web Anda.
+
+### 6. Konfigurasi Document Root
+Konfigurasikan web server atau arahkan domain Anda agar mengarah ke direktori `public` sebagai Document Root utama.
 
 ---
 
-## 👤 Akun Akses Default
+## 👤 Akses Halaman Admin
 
-Untuk mempermudah pengujian awal, database seeder telah mengonfigurasi akun administrator berikut:
-* **Email**: `admin@ptun.go.id`
-* **Kata Sandi**: `password`
-* **Cara Akses**: Klik simbol `©` di footer halaman beranda untuk membuka form masuk.
+Untuk menjaga keamanan pada lingkungan hosting:
+* Form login administrator diakses secara tersembunyi dengan mengklik karakter hak cipta `©` pada bagian footer halaman utama.
+* Kredensial administrator harus dibuat secara aman menggunakan database seeder kustom atau dengan menambahkan data pengguna baru secara manual pada tabel `users` dengan enkripsi password (menggunakan bcrypt) demi mencegah kerentanan keamanan akses default.
 
 ---
 
 ## 📅 Alur Uji Coba Simulasi Kehadiran
 
-1. **Akses Form Absensi**: Buka `http://127.0.0.1:8000` lalu klik **Mulai Absen Sekarang**, atau simulasikan check-in lokasi QR dengan mengakses `http://127.0.0.1:8000/absensi?qrcode=QR-SATPAM` (Lokasi: Pos Satpam).
+1. **Akses Form Absensi**: Buka `https://[domain-anda]/` lalu klik **Mulai Absen Sekarang**, atau simulasikan check-in lokasi QR dengan mengakses URL `https://[domain-anda]/absensi?qrcode=QR-SATPAM` (Lokasi: Pos Satpam).
 2. **Pilih Perkara & Konfirmasi Pihak**:
    * Pilih nomor perkara persidangan yang dijadwalkan hari ini.
-   * Pilih nama Anda dari daftar pihak wajib hadir.
-   * Masukkan/konfirmasikan nomor WhatsApp Anda, lalu tekan **Kirim Kehadiran (Check-In)**.
-3. **Penyelesaian Check-In**: Ulangi langkah di atas untuk absensi pihak lainnya yang terdaftar pada sidang tersebut.
-4. **Pemicu Notifikasi**: Begitu pihak terakhir menekan tombol check-in, sistem otomatis mendeteksi kehadiran lengkap. Masuklah ke panel admin dan lihat menu **Log Notifikasi**; sistem akan mencatat log broadcast WhatsApp baru berstatus `terkirim` ke Majelis Hakim & Panitera Pengganti.
+   * Pilih nama pihak dari daftar yang wajib hadir.
+   * Masukkan/konfirmasikan nomor WhatsApp pihak tersebut, lalu tekan **Kirim Kehadiran (Check-In)**.
+3. **Penyelesaian Check-In**: Ulangi langkah di atas untuk pihak-pihak lain yang terdaftar dalam jadwal sidang hari tersebut.
+4. **Pemicu Notifikasi**: Setelah semua pihak yang wajib hadir melakukan check-in, sistem secara otomatis mendeteksi kehadiran lengkap dan mengirimkan broadcast notifikasi WhatsApp kepada Majelis Hakim dan Panitera Pengganti. Log pengiriman dapat dipantau di menu **Log Notifikasi** pada panel admin.
