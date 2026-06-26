@@ -40,6 +40,18 @@
                     @enderror
                 </div>
 
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Alamat Email Pihak</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                        <input type="email" name="email" id="email" class="form-control form-control-custom @error('email') is-invalid @enderror" placeholder="Contoh: saksi@example.com" value="{{ old('email') }}" required>
+                    </div>
+                    @error('email')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <!-- Status Pihak -->
                 <div class="mb-4">
                     <label for="status_pihak" class="form-label fw-semibold">Status Pihak / Kedudukan Hukum</label>

@@ -38,18 +38,11 @@
                         <th class="border-0">No</th>
                         <th class="border-0">Nomor Perkara</th>
                         <th class="border-0">Tahun</th>
-                        <th class="border-0">Majelis Hakim</th>
-                        <th class="border-0">Panitera Pengganti</th>
                         <th class="border-0 text-center" style="width: 180px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($perkaras as $index => $perkara)
-                        @php
-                            $ketua = $perkara->hakims->firstWhere('pivot.jabatan', 'Ketua Majelis');
-                            $anggotas = $perkara->hakims->filter(function($h) { return $h->pivot->jabatan === 'Hakim Anggota'; });
-                            $pp = $perkara->paniteraPenggantis->first();
-                        @endphp
                         <tr>
                             <td>{{ $perkaras->firstItem() + $index }}</td>
                             <td>
@@ -58,24 +51,6 @@
                                 </a>
                             </td>
                             <td><span class="badge bg-light text-dark border">{{ $perkara->tahun }}</span></td>
-                            <td>
-                                <div class="small">
-                                    <span class="d-block"><strong class="text-secondary">Ketua:</strong> {{ $ketua->nama ?? '-' }}</span>
-                                    <span class="d-block">
-                                        <strong class="text-secondary">Anggota:</strong> 
-                                        @if($anggotas->isEmpty())
-                                            -
-                                        @else
-                                            <ul class="mb-0 ps-3">
-                                                @foreach($anggotas as $ang)
-                                                    <li>{{ $ang->nama }}</li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </span>
-                                </div>
-                            </td>
-                            <td>{{ $pp->nama ?? '-' }}</td>
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <a href="{{ route('admin.perkara.show', $perkara->id) }}" class="btn btn-sm btn-outline-info border-0 rounded-circle p-2" title="Detail Perkara & Sidang">
@@ -96,7 +71,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-5">
+                            <td colspan="4" class="text-center text-muted py-5">
                                 <i class="bi bi-folder2-open fs-1 d-block mb-3"></i>
                                 Data Perkara tidak ditemukan.
                             </td>

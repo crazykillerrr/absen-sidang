@@ -33,61 +33,106 @@ class DashboardController extends Controller
         // 3. Total Kehadiran Hari Ini
         $totalKehadiranHariIni = Kehadiran::whereDate('waktu_hadir', $today)->count();
 
-        // 4. Total Sidang Lengkap Hari Ini
+        // 4. Total Sidang Berjalan Hari Ini (yang sudah diisi kehadiran pihak)
         $todaySchedules = JadwalSidang::whereDate('tanggal_sidang', $today)
-            ->withCount([
-                'pihakSidangs',
-                'pihakSidangs as pihak_hadir_count' => function ($q) {
-                    $q->whereHas('kehadiran');
-                }
-            ])->get();
+            ->withCount('pihakSidangs')->get();
 
-        $totalSidangLengkap = $todaySchedules->filter(function ($j) {
-            return $j->pihak_sidangs_count > 0 && $j->pihak_hadir_count === $j->pihak_sidangs_count;
+        $totalSidangBerjalan = $todaySchedules->filter(function ($j) {
+            return $j->pihak_sidangs_count > 0;
         })->count();
 
         // 5. Total Notifikasi Terkirim
         $totalNotifikasiTerkirim = Notifikasi::where('status_kirim', 'terkirim')->count();
 
-        // --- Data Grafik 1: Kehadiran per Hari (7 Hari Terakhir) ---
-        $last7Days = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $last7Days[] = Carbon::today()->subDays($i)->toDateString();
-        }
-
-        $kehadiranPerHariData = [];
-        $kehadiranPerHariLabels = [];
-        foreach ($last7Days as $date) {
-            $count = Kehadiran::whereDate('waktu_hadir', $date)->count();
-            $kehadiranPerHariData[] = $count;
-            $kehadiranPerHariLabels[] = Carbon::parse($date)->translatedFormat('d M');
-        }
-
-        // --- Data Grafik 2: Kehadiran per Agenda Sidang ---
-        $agendaData = DB::table('kehadiran')
-            ->join('pihak_sidang', 'kehadiran.pihak_sidang_id', '=', 'pihak_sidang.id')
-            ->join('jadwal_sidang', 'pihak_sidang.jadwal_sidang_id', '=', 'jadwal_sidang.id')
-            ->select('jadwal_sidang.agenda_sidang', DB::raw('count(kehadiran.id) as total'))
-            ->groupBy('jadwal_sidang.agenda_sidang')
-            ->get();
-
-        $agendaLabels = $agendaData->pluck('agenda_sidang')->toArray();
-        $agendaTotals = $agendaData->pluck('total')->toArray();
-
         // --- Tabel Sidang Hari Ini ---
         $sidangHariIni = $this->jadwalService->getTodaySchedules();
+
+        // --- Daftar Kehadiran Terbaru ---
+        $kehadiranTerbaru = Kehadiran::with([
+                'pihakSidang.jadwalSidang.perkara',
+                'pihakSidang.jadwalSidang.ruangSidang'
+            ])
+            ->orderBy('waktu_hadir', 'desc')
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalPerkara',
             'totalJadwalHariIni',
             'totalKehadiranHariIni',
-            'totalSidangLengkap',
+            'totalSidangBerjalan',
             'totalNotifikasiTerkirim',
-            'kehadiranPerHariLabels',
-            'kehadiranPerHariData',
-            'agendaLabels',
-            'agendaTotals',
-            'sidangHariIni'
+            'sidangHariIni',
+            'kehadiranTerbaru'
         ));
+    }
+
+    public function getDashboardData()
+    {
+        $today = Carbon::today();
+
+        // 1. Total Kehadiran Hari Ini
+        $totalKehadiranHariIni = Kehadiran::whereDate('waktu_hadir', $today)->count();
+
+        // 2. Total Sidang Berjalan Hari Ini (yang sudah diisi kehadiran pihak)
+        $todaySchedules = JadwalSidang::whereDate('tanggal_sidang', $today)
+            ->withCount('pihakSidangs')->get();
+
+        $totalSidangBerjalan = $todaySchedules->filter(function ($j) {
+            return $j->pihak_sidangs_count > 0;
+        })->count();
+
+        // 3. Tabel Sidang Hari Ini
+        $sidangHariIni = $this->jadwalService->getTodaySchedules()->map(function ($sidang) {
+            $totalHadir = $sidang->pihakSidangs->count();
+            
+            return [
+                'id' => $sidang->id,
+                'jam_sidang' => substr($sidang->jam_sidang, 0, 5),
+                'jenis_sidang' => $sidang->jenis_sidang,
+                'perkara_id' => $sidang->perkara_id,
+                'nomor_perkara' => $sidang->perkara->nomor_perkara,
+                'agenda_sidang' => $sidang->agenda_sidang,
+                'ruang_sidang' => $sidang->ruangSidang->nama_ruang,
+                'total_hadir' => $totalHadir,
+                'perkara_show_route' => route('admin.perkara.show', $sidang->perkara_id),
+                'pihak_sidang_route' => route('admin.pihak-sidang.index', $sidang->id),
+                'panggil_route' => route('admin.jadwal-sidang.panggil', $sidang->id)
+            ];
+        });
+
+        // 4. Daftar Kehadiran Terbaru
+        $kehadiranTerbaru = Kehadiran::with([
+                'pihakSidang.jadwalSidang.perkara',
+                'pihakSidang.jadwalSidang.ruangSidang'
+            ])
+            ->orderBy('waktu_hadir', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function ($k) {
+                $pihak = $k->pihakSidang;
+                $jadwal = $pihak ? $pihak->jadwalSidang : null;
+                $perkara = $jadwal ? $jadwal->perkara : null;
+                $ruang = $jadwal ? $jadwal->ruangSidang : null;
+
+                return [
+                    'waktu_hadir' => $k->waktu_hadir->format('H:i') . ' WIB',
+                    'tanggal_hadir' => $k->waktu_hadir->translatedFormat('d-m-Y'),
+                    'pihak_nama' => $pihak ? $pihak->nama : '-',
+                    'pihak_status' => $pihak ? $pihak->status_pihak : '-',
+                    'nomor_perkara' => $perkara ? $perkara->nomor_perkara : '-',
+                    'perkara_show_route' => $perkara ? route('admin.perkara.show', $perkara->id) : '#',
+                    'agenda_sidang' => $jadwal ? $jadwal->agenda_sidang : '-',
+                    'ruang_sidang' => $ruang ? $ruang->nama_ruang : '-',
+                    'status_hadir' => $k->status_hadir,
+                ];
+            });
+
+        return response()->json([
+            'totalKehadiranHariIni' => $totalKehadiranHariIni,
+            'totalSidangBerjalan' => $totalSidangBerjalan,
+            'sidangHariIni' => $sidangHariIni,
+            'kehadiranTerbaru' => $kehadiranTerbaru
+        ]);
     }
 }

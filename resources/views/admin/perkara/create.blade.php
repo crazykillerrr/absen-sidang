@@ -46,58 +46,7 @@
                     @enderror
                 </div>
 
-                <hr class="my-4" style="color: var(--border-color);">
 
-                <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-shield-shaded me-2"></i>Majelis Hakim & Panitera</h5>
-
-                <!-- Ketua Majelis -->
-                <div class="mb-3">
-                    <label for="ketua_majelis" class="form-label fw-semibold">Ketua Majelis Hakim</label>
-                    <select name="ketua_majelis" id="ketua_majelis" class="form-select form-control-custom @error('ketua_majelis') is-invalid @enderror" required>
-                        <option value="" disabled selected>-- Pilih Ketua Majelis --</option>
-                        @foreach ($hakims as $hakim)
-                            <option value="{{ $hakim->id }}" {{ old('ketua_majelis') == $hakim->id ? 'selected' : '' }}>{{ $hakim->nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('ketua_majelis')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Hakim Anggota (Checkboxes) -->
-                <div class="mb-4">
-                    <label class="form-label fw-semibold d-block">Hakim Anggota (Pilih minimal 1)</label>
-                    <div class="row g-2 p-3 bg-light rounded-3 border" style="max-height: 200px; overflow-y: auto;">
-                        @foreach ($hakims as $hakim)
-                            <div class="col-md-6 col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="hakim_anggota[]" value="{{ $hakim->id }}" id="hakim_anggota_{{ $hakim->id }}" 
-                                        {{ is_array(old('hakim_anggota')) && in_array($hakim->id, old('hakim_anggota')) ? 'checked' : '' }}>
-                                    <label class="form-check-label text-dark" for="hakim_anggota_{{ $hakim->id }}">
-                                        {{ $hakim->nama }}
-                                    </label>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                    @error('hakim_anggota')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Panitera Pengganti -->
-                <div class="mb-4">
-                    <label for="panitera_pengganti" class="form-label fw-semibold">Panitera Pengganti (PP)</label>
-                    <select name="panitera_pengganti" id="panitera_pengganti" class="form-select form-control-custom @error('panitera_pengganti') is-invalid @enderror" required>
-                        <option value="" disabled selected>-- Pilih Panitera Pengganti --</option>
-                        @foreach ($pps as $pp)
-                            <option value="{{ $pp->id }}" {{ old('panitera_pengganti') == $pp->id ? 'selected' : '' }}>{{ $pp->nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('panitera_pengganti')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 fw-semibold">
                     <i class="bi bi-save me-2"></i>Simpan Perkara

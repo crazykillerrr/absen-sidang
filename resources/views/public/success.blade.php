@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Berhasil - PTUN Bandar Lampung</title>
+    <title>SI-OCID - Absensi Berhasil</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -30,7 +30,7 @@
                     </div>
 
                     <h2 class="fw-bold text-success mb-2">Absensi Berhasil!</h2>
-                    <p class="text-muted small mb-4">Kehadiran Anda telah dicatat dalam sistem monitoring sidang PTUN Bandar Lampung.</p>
+                    <p class="text-muted small mb-4">Kehadiran Anda telah dicatat dalam SI-OCID PTUN Bandar Lampung.</p>
 
                     <!-- Receipt Details Card -->
                     <div class="card border-0 bg-light p-4 rounded-3 text-start mb-4">
@@ -59,7 +59,7 @@
 
                     <div class="p-3 bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-3 mb-4 text-start small">
                         <i class="bi bi-info-circle-fill me-1"></i>
-                        Sistem mendeteksi semua pihak wajib hadir telah melakukan absen. Notifikasi email otomatis telah dikirimkan ke Majelis Hakim dan Panitera untuk bersiap memulai sidang.
+                        Sistem mendeteksi semua pihak wajib hadir telah melakukan absen. Notifikasi email otomatis telah dikirimkan ke para pihak persidangan.
                     </div>
 
                     <a href="{{ route('portal') }}" class="btn btn-success w-100 py-2.5 rounded-pill fw-semibold shadow-sm">

@@ -140,4 +140,62 @@ class JadwalSidangController extends Controller
         $this->jadwalService->delete($id);
         return redirect()->route('admin.jadwal-sidang.index')->with('success', 'Jadwal Sidang berhasil dihapus.');
     }
+
+    public function panggil(int $id, \App\Services\WhatsAppNotificationService $waService)
+    {
+        $jadwal = \App\Models\JadwalSidang::with(['perkara', 'pihakSidangs', 'ruangSidang'])->findOrFail($id);
+        $perkara = $jadwal->perkara;
+        $pihaks = $jadwal->pihakSidangs;
+
+        if ($pihaks->isEmpty()) {
+            return redirect()->back()->with('error', 'Belum ada pihak yang melakukan absensi hadir untuk jadwal ini.');
+        }
+
+        $waSuccess = 0;
+        $emailSuccess = 0;
+
+        foreach ($pihaks as $pihak) {
+            // WhatsApp Notification
+            if (!empty($pihak->nomor_hp)) {
+                $waMessage = "PANGGILAN PERSIDANGAN: Sidang untuk perkara nomor {$perkara->nomor_perkara} dengan agenda {$jadwal->agenda_sidang} di {$jadwal->ruangSidang->nama_ruang} akan segera dimulai. Kepada Bapak/Ibu {$pihak->nama} ({$pihak->status_pihak}) harap segera memasuki ruang sidang. Terima kasih.";
+                
+                $waStatus = $waService->sendNotification($pihak->nomor_hp, $waMessage);
+                
+                \App\Models\Notifikasi::create([
+                    'jadwal_sidang_id' => $jadwal->id,
+                    'jenis' => 'WhatsApp',
+                    'status_kirim' => $waStatus ? 'terkirim' : 'gagal',
+                    'waktu_kirim' => \Carbon\Carbon::now()
+                ]);
+                if ($waStatus) {
+                    $waSuccess++;
+                }
+            }
+
+            // Email Notification - For all parties
+            if (!empty($pihak->email)) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($pihak->email)->send(new \App\Mail\PanggilanSidangMail($jadwal, $pihak));
+                    
+                    \App\Models\Notifikasi::create([
+                        'jadwal_sidang_id' => $jadwal->id,
+                        'jenis' => 'Email',
+                        'status_kirim' => 'terkirim',
+                        'waktu_kirim' => \Carbon\Carbon::now()
+                    ]);
+                    $emailSuccess++;
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("JadwalSidangController@panggil: Gagal kirim email ke {$pihak->email}. Error: " . $e->getMessage());
+                    \App\Models\Notifikasi::create([
+                        'jadwal_sidang_id' => $jadwal->id,
+                        'jenis' => 'Email',
+                        'status_kirim' => 'gagal',
+                        'waktu_kirim' => \Carbon\Carbon::now()
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', "Panggilan berhasil dikirim ke para pihak. WhatsApp terkirim: {$waSuccess}, Email terkirim: {$emailSuccess}.");
+    }
 }

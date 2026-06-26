@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\PerkaraRepositoryInterface;
-use App\Models\MajelisHakim;
-use App\Models\PenugasanPp;
 use Illuminate\Support\Facades\DB;
 
 class PerkaraService
@@ -42,80 +40,19 @@ class PerkaraService
     }
 
     /**
-     * Buat Perkara beserta Majelis Hakim dan Panitera Pengganti dalam satu transaksi
+     * Buat Perkara
      */
-    public function createPerkara(array $data, int $ketuaHakimId, array $anggotaHakimIds, int $ppId)
+    public function createPerkara(array $data)
     {
-        return DB::transaction(function () use ($data, $ketuaHakimId, $anggotaHakimIds, $ppId) {
-            // 1. Buat Perkara
-            $perkara = $this->repository->create($data);
-
-            // 2. Simpan Ketua Majelis
-            MajelisHakim::create([
-                'perkara_id' => $perkara->id,
-                'hakim_id' => $ketuaHakimId,
-                'jabatan' => 'Ketua Majelis',
-            ]);
-
-            // 3. Simpan Hakim Anggota
-            foreach ($anggotaHakimIds as $hakimId) {
-                if ($hakimId != $ketuaHakimId) { // Hindari duplikasi jika tidak sengaja terpilih sama
-                    MajelisHakim::create([
-                        'perkara_id' => $perkara->id,
-                        'hakim_id' => $hakimId,
-                        'jabatan' => 'Hakim Anggota',
-                    ]);
-                }
-            }
-
-            // 4. Simpan Penugasan Panitera Pengganti
-            PenugasanPp::create([
-                'perkara_id' => $perkara->id,
-                'panitera_pengganti_id' => $ppId,
-            ]);
-
-            return $perkara;
-        });
+        return $this->repository->create($data);
     }
 
     /**
-     * Update Perkara beserta Majelis Hakim dan Panitera Pengganti dalam satu transaksi
+     * Update Perkara
      */
-    public function updatePerkara(int $id, array $data, int $ketuaHakimId, array $anggotaHakimIds, int $ppId)
+    public function updatePerkara(int $id, array $data)
     {
-        return DB::transaction(function () use ($id, $data, $ketuaHakimId, $anggotaHakimIds, $ppId) {
-            // 1. Update Perkara
-            $perkara = $this->repository->update($id, $data);
-
-            // 2. Sync Majelis Hakim (Hapus yang lama, simpan baru)
-            MajelisHakim::where('perkara_id', $perkara->id)->delete();
-            
-            MajelisHakim::create([
-                'perkara_id' => $perkara->id,
-                'hakim_id' => $ketuaHakimId,
-                'jabatan' => 'Ketua Majelis',
-            ]);
-
-            foreach ($anggotaHakimIds as $hakimId) {
-                if ($hakimId != $ketuaHakimId) {
-                    MajelisHakim::create([
-                        'perkara_id' => $perkara->id,
-                        'hakim_id' => $hakimId,
-                        'jabatan' => 'Hakim Anggota',
-                    ]);
-                }
-            }
-
-            // 3. Sync PP (Hapus lama, simpan baru)
-            PenugasanPp::where('perkara_id', $perkara->id)->delete();
-            
-            PenugasanPp::create([
-                'perkara_id' => $perkara->id,
-                'panitera_pengganti_id' => $ppId,
-            ]);
-
-            return $perkara;
-        });
+        return $this->repository->update($id, $data);
     }
 
     public function delete(int $id)

@@ -27,6 +27,6 @@ class Kehadiran extends Model
      */
     public function pihakSidang(): BelongsTo
     {
-        return $this->belongsTo(PihakSidang::class, 'pihak_sidang_id');
+        return $this->belongsTo(PihakSidang::class, 'pihak_sidang_id')->withTrashed();
     }
 }

@@ -115,7 +115,7 @@
                                 <th class="border-0">Nomor Perkara</th>
                                 <th class="border-0">Agenda</th>
                                 <th class="border-0">Ruang Sidang</th>
-                                <th class="border-0">Litigant (Pihak)</th>
+                                <th class="border-0 text-center">Kehadiran Pihak</th>
                                 <th class="border-0">Terakhir Sinkron</th>
                                 <th class="border-0 text-center" style="width: 220px;">Aksi</th>
                             </tr>
@@ -148,22 +148,8 @@
                                     <td>
                                         <span class="badge bg-light text-dark border">{{ $sch->ruangSidang->nama_ruang }}</span>
                                     </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2 mb-1">
-                                            <div class="progress flex-grow-1" style="height: 6px; min-width: 80px;">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $totalPihak > 0 ? ($hadirPihak / $totalPihak) * 100 : 0 }}%"></div>
-                                            </div>
-                                            <span class="small fw-semibold">{{ $hadirPihak }}/{{ $totalPihak }}</span>
-                                        </div>
-                                        <span class="small text-muted d-block">
-                                            @if ($totalPihak === 0)
-                                                <span class="text-secondary">Pihak kosong</span>
-                                            @elseif ($lengkap)
-                                                <span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>Hadir Lengkap</span>
-                                            @else
-                                                <span class="text-warning fw-medium">Belum lengkap</span>
-                                            @endif
-                                        </span>
+                                    <td class="text-center">
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-semibold">{{ $totalPihak }} Pihak Hadir</span>
                                     </td>
                                     <td>
                                         <span class="small text-secondary d-block">
@@ -191,7 +177,7 @@
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                             <a href="{{ route('admin.pihak-sidang.index', $sch->id) }}" class="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-semibold small" title="Kelola Litigant/Pihak">
-                                                <i class="bi bi-people me-1"></i>Litigant ({{ $totalPihak }})
+                                                <i class="bi bi-people me-1"></i>Pihak Hadir ({{ $totalPihak }})
                                             </a>
                                             <a href="{{ route('admin.jadwal-sidang.edit', $sch->id) }}" class="btn btn-sm btn-outline-primary border-0 rounded-circle p-2" title="Edit">
                                                 <i class="bi bi-pencil-square"></i>

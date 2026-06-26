@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nomor_hp');
             $table->string('status_pihak'); // Penggugat, Tergugat, Saksi Penggugat, Ahli Tergugat, dll.
+            $table->string('email')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

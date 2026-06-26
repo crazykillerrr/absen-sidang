@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - Admin PTUN Bandar Lampung</title>
+    <title>@yield('title') - SI-OCID PTUN BDL</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
             <div class="sidebar-header d-flex align-items-center justify-content-between">
                 <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
                     <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
-                    <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">PTUN BDL</span>
+                    <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">SI-OCID</span>
                 </a>
                 <button type="button" id="sidebarCollapseMobile" class="btn d-md-none border-0 text-secondary">
                     <i class="bi bi-x-lg fs-4"></i>
@@ -64,16 +64,7 @@
                         <i class="bi bi-calendar3"></i> Jadwal Sidang
                     </a>
                 </li>
-                <li class="{{ Route::is('admin.hakim.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.hakim.index') }}">
-                        <i class="bi bi-people"></i> Kelola Hakim
-                    </a>
-                </li>
-                <li class="{{ Route::is('admin.panitera-pengganti.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.panitera-pengganti.index') }}">
-                        <i class="bi bi-person-badge"></i> Panitera Pengganti
-                    </a>
-                </li>
+
                 <li class="{{ Route::is('admin.ruang-sidang.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.ruang-sidang.index') }}">
                         <i class="bi bi-door-closed"></i> Ruang Sidang
@@ -255,6 +246,13 @@
                 timerProgressBar: true
             });
         @endif
+
+        // Force page refresh if loaded from browser history back/forward cache
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
     </script>
     
     @yield('scripts')

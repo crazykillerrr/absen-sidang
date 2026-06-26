@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Persidangan PTUN Bandar Lampung</title>
+    <title>Pengingat Jadwal Sidang PTUN Bandar Lampung</title>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -50,8 +50,8 @@
         }
         .badge {
             display: inline-block;
-            background-color: #d1fae5;
-            color: #065f46;
+            background-color: #fef3c7;
+            color: #d97706;
             font-size: 12px;
             font-weight: 600;
             padding: 6px 14px;
@@ -136,36 +136,43 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
-                <h1>MONITORING PERSIDANGAN</h1>
+                <h1>PENGINGAT JADWAL PERSIDANGAN</h1>
                 <p>Pengadilan Tata Usaha Negara Bandar Lampung</p>
             </div>
             
             <div class="content">
-                <div class="badge">Kehadiran Lengkap</div>
-                <h2 class="headline">Pemberitahuan Persidangan Siap Dimulai</h2>
-                <p class="intro">Yth. Bapak/Ibu Pihak Sidang (Saksi / Ahli / Pihak Berperkara), diberitahukan bahwa seluruh pihak yang diwajibkan hadir pada jadwal sidang di bawah ini telah lengkap melakukan absensi:</p>
+                <div class="badge">Pengingat H-1</div>
+                <h2 class="headline">Jadwal Persidangan Besok Hari</h2>
+                <p class="intro">Yth. Bapak/Ibu <strong>{{ $pihak?->nama ?? '-' }}</strong> ({{ $pihak?->status_pihak ?? '-' }}), diingatkan kembali bahwa Anda memiliki jadwal persidangan yang akan dilaksanakan besok pada:</p>
                 
                 <div class="details-card">
                     <div class="detail-row">
                         <div class="detail-label">Nomor Perkara</div>
-                        <div class="detail-value">{{ $perkara->nomor_perkara }}</div>
+                        <div class="detail-value">{{ $perkara?->nomor_perkara ?? '-' }}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Agenda Sidang</div>
-                        <div class="detail-value">{{ $jadwal->agenda_sidang }}</div>
+                        <div class="detail-value">{{ $jadwal?->agenda_sidang ?? '-' }}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Ruang Sidang</div>
-                        <div class="detail-value">{{ $jadwal->ruangSidang->nama_ruang }}</div>
+                        <div class="detail-value">{{ $jadwal?->ruangSidang?->nama_ruang ?? '-' }}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Waktu Pelaksanaan</div>
-                        <div class="detail-value">{{ $waktu }}</div>
+                        <div class="detail-value">
+                            @if ($jadwal?->tanggal_sidang)
+                                {{ \Carbon\Carbon::parse($jadwal->tanggal_sidang)->translatedFormat('l, d F Y') }}<br>
+                            @endif
+                            @if ($jadwal?->jam_sidang)
+                                Pukul {{ substr($jadwal->jam_sidang, 0, 5) }} WIB
+                            @endif
+                        </div>
                     </div>
                 </div>
 
                 <div class="action-box">
-                    <p class="action-text"><strong>Rekomendasi Tindakan:</strong> Silakan mempersiapkan diri dan berkas persidangan Anda. Mohon bersiap-siap untuk segera dipanggil memasuki ruang sidang.</p>
+                    <p class="action-text"><strong>Penting:</strong> Harap hadir di gedung pengadilan 30 menit sebelum jadwal persidangan dimulai dan membawa dokumen identitas diri serta berkas perkara terkait.</p>
                 </div>
             </div>
             

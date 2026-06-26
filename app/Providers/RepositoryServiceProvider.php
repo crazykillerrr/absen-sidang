@@ -12,14 +12,6 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            \App\Repositories\Contracts\HakimRepositoryInterface::class,
-            \App\Repositories\Eloquent\HakimRepository::class
-        );
-        $this->app->bind(
-            \App\Repositories\Contracts\PaniteraPenggantiRepositoryInterface::class,
-            \App\Repositories\Eloquent\PaniteraPenggantiRepository::class
-        );
-        $this->app->bind(
             \App\Repositories\Contracts\RuangSidangRepositoryInterface::class,
             \App\Repositories\Eloquent\RuangSidangRepository::class
         );

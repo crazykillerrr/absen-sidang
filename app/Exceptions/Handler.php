@@ -27,4 +27,16 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Convert an authentication exception into a response.
+     */
+    protected function unauthenticated($request, \Illuminate\Auth\AuthenticationException $exception)
+    {
+        if ($request->expectsJson() || $request->ajax() || $request->headers->get('sec-fetch-mode') === 'cors') {
+            return response()->json(['message' => $exception->getMessage()], 401);
+        }
+
+        return redirect()->guest($exception->redirectTo() ?? route('login'));
+    }
 }

@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-4">
     <h4 class="fw-bold mb-1" style="color: var(--text-primary);">Log Notifikasi Email</h4>
-    <p class="text-muted mb-0">Daftar riwayat pengiriman notifikasi otomatis kepada Majelis Hakim dan Panitera Pengganti via Email.</p>
+    <p class="text-muted mb-0">Daftar riwayat pengiriman notifikasi otomatis kepada para pihak persidangan via Email.</p>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4" style="background-color: var(--bg-secondary);">
@@ -50,11 +50,11 @@
                             <td>{{ $notifikasis->firstItem() + $index }}</td>
                             <td>
                                 <strong style="color: var(--text-primary);">
-                                    {{ $notif->jadwalSidang->perkara->nomor_perkara ?? '-' }}
+                                    {{ $notif->jadwalSidang?->perkara?->nomor_perkara ?? '-' }}
                                 </strong>
                             </td>
-                            <td>{{ $notif->jadwalSidang->agenda_sidang ?? '-' }}</td>
-                            <td>{{ $notif->jadwalSidang->ruangSidang->nama_ruang ?? '-' }}</td>
+                            <td>{{ $notif->jadwalSidang?->agenda_sidang ?? '-' }}</td>
+                            <td>{{ $notif->jadwalSidang?->ruangSidang?->nama_ruang ?? '-' }}</td>
                             <td>
                                 @if($notif->jenis === 'Email')
                                     <span class="badge bg-primary bg-opacity-10 text-primary"><i class="bi bi-envelope me-1"></i>{{ $notif->jenis }}</span>

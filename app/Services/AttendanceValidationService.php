@@ -32,7 +32,7 @@ class AttendanceValidationService
      */
     public function validateAndNotify(int $jadwalSidangId): bool
     {
-        // 1. Hitung jumlah pihak yang wajib hadir pada jadwal sidang tersebut
+        return false; // Dinonaktifkan karena tidak ada pihak terdaftar (absen mandiri murni)
         $totalWajibHadir = PihakSidang::where('jadwal_sidang_id', $jadwalSidangId)->count();
         if ($totalWajibHadir === 0) {
             Log::warning("AttendanceValidationService: Jadwal #{$jadwalSidangId} tidak memiliki pihak sidang wajib hadir.");
@@ -59,10 +59,9 @@ class AttendanceValidationService
                 return true;
             }
 
-            // Ambil jadwal sidang lengkap beserta relasi perkara, majelis hakim, panitera pengganti, dan ruang sidang
+            // Ambil jadwal sidang lengkap beserta relasi perkara dan ruang sidang
             $jadwal = $this->jadwalRepository->findWith($jadwalSidangId, [
-                'perkara.hakims',
-                'perkara.paniteraPenggantis',
+                'perkara',
                 'ruangSidang'
             ]);
 
@@ -72,29 +71,16 @@ class AttendanceValidationService
                 return false;
             }
 
-            // Ambil seluruh Hakim pada perkara tersebut
-            $hakims = $perkara->hakims;
-            // Ambil Panitera Pengganti pada perkara tersebut
-            $pps = $perkara->paniteraPenggantis;
+            // Ambil seluruh pihak sidang yang terdaftar dan memiliki email
+            $pihaks = PihakSidang::where('jadwal_sidang_id', $jadwalSidangId)
+                ->whereNotNull('email')
+                ->where('email', '!=', '')
+                ->get();
 
-            // Kumpulkan alamat email
-            $emails = [];
-            foreach ($hakims as $hakim) {
-                if (!empty($hakim->email)) {
-                    $emails[] = $hakim->email;
-                }
-            }
-            foreach ($pps as $pp) {
-                if (!empty($pp->email)) {
-                    $emails[] = $pp->email;
-                }
-            }
-
-            // Hapus duplikat email jika ada
-            $emails = array_unique($emails);
+            $emails = $pihaks->pluck('email')->unique()->toArray();
 
             if (empty($emails)) {
-                Log::warning("AttendanceValidationService: Tidak ditemukan alamat email untuk Hakim/PP pada perkara nomor {$perkara->nomor_perkara}");
+                Log::warning("AttendanceValidationService: Tidak ditemukan alamat email pihak untuk persidangan nomor {$perkara->nomor_perkara}");
                 return false;
             }
 
@@ -105,14 +91,22 @@ class AttendanceValidationService
             
             $waktu = $tanggal . ' Pukul ' . substr($jadwal->jam_sidang, 0, 5) . ' WIB';
 
-            // Kirim notifikasi melalui Laravel Mail
+            // Kirim notifikasi melalui Laravel Mail secara individual
             $statusKirim = false;
-            try {
-                Mail::to($emails)->send(new NotifikasiSidangMail($jadwal, $perkara, $waktu));
-                Log::info("AttendanceValidationService: Notifikasi Email berhasil dikirim ke: " . implode(', ', $emails));
+            $emailSukses = [];
+            foreach ($emails as $email) {
+                try {
+                    Mail::to($email)->send(new NotifikasiSidangMail($jadwal, $perkara, $waktu));
+                    Log::info("AttendanceValidationService: Notifikasi Email berhasil dikirim ke: " . $email);
+                    $emailSukses[] = $email;
+                } catch (\Exception $e) {
+                    Log::error("AttendanceValidationService: Exception saat mengirim Email ke " . $email . ". Error: " . $e->getMessage());
+                }
+            }
+
+            if (count($emailSukses) > 0) {
                 $statusKirim = true;
-            } catch (\Exception $e) {
-                Log::error("AttendanceValidationService: Exception saat mengirim Email ke " . implode(', ', $emails) . ". Error: " . $e->getMessage());
+                Log::info("AttendanceValidationService: Selesai mengirim email. Berhasil ke: " . implode(', ', $emailSukses));
             }
 
             // Simpan log notifikasi

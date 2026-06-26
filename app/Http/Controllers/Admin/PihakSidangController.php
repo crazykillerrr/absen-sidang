@@ -45,6 +45,26 @@ class PihakSidangController extends Controller
         return view('admin.pihak_sidang.index', compact('jadwal', 'pihaks'));
     }
 
+    public function getAttendanceData(int $jadwalSidangId)
+    {
+        $pihaks = \App\Models\PihakSidang::where('jadwal_sidang_id', $jadwalSidangId)
+            ->with('kehadiran')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function ($pihak) {
+                return [
+                    'id' => $pihak->id,
+                    'nama' => $pihak->nama,
+                    'status_pihak' => $pihak->status_pihak,
+                    'nomor_hp' => $pihak->nomor_hp,
+                    'kehadiran' => $pihak->kehadiran ? true : false,
+                    'kehadiran_time' => $pihak->kehadiran ? \Carbon\Carbon::parse($pihak->kehadiran->waktu_hadir)->format('H:i') : null,
+                ];
+            });
+
+        return response()->json(['pihaks' => $pihaks]);
+    }
+
     public function create(int $jadwalSidangId)
     {
         $jadwal = $this->jadwalService->findWith($jadwalSidangId, ['perkara']);
@@ -57,18 +77,28 @@ class PihakSidangController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_hp' => 'required|string|max:20|regex:/^[0-9]+$/',
+            'email' => 'required|email|max:255',
             'status_pihak' => 'required|string|in:' . implode(',', $this->statuses),
         ], [
             'nama.required' => 'Nama Pihak wajib diisi.',
             'nomor_hp.required' => 'Nomor HP wajib diisi.',
             'nomor_hp.regex' => 'Nomor HP hanya boleh berisi angka.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
             'status_pihak.required' => 'Status Pihak wajib dipilih.',
             'status_pihak.in' => 'Status Pihak tidak valid.',
         ]);
 
         $validated['jadwal_sidang_id'] = $jadwalSidangId;
 
-        $this->pihakService->create($validated);
+        $pihak = $this->pihakService->create($validated);
+
+        // Auto check-in saat pihak ditambahkan secara manual oleh admin
+        \App\Models\Kehadiran::create([
+            'pihak_sidang_id' => $pihak->id,
+            'waktu_hadir' => \Carbon\Carbon::now(),
+            'status_hadir' => 'hadir'
+        ]);
 
         return redirect()->route('admin.pihak-sidang.index', $jadwalSidangId)
             ->with('success', 'Pihak Berperkara berhasil ditambahkan ke jadwal sidang.');
@@ -88,11 +118,14 @@ class PihakSidangController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_hp' => 'required|string|max:20|regex:/^[0-9]+$/',
+            'email' => 'required|email|max:255',
             'status_pihak' => 'required|string|in:' . implode(',', $this->statuses),
         ], [
             'nama.required' => 'Nama Pihak wajib diisi.',
             'nomor_hp.required' => 'Nomor HP wajib diisi.',
             'nomor_hp.regex' => 'Nomor HP hanya boleh berisi angka.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
             'status_pihak.required' => 'Status Pihak wajib dipilih.',
             'status_pihak.in' => 'Status Pihak tidak valid.',
         ]);

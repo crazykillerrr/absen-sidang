@@ -17,7 +17,7 @@
 
 <div class="row g-4">
     <!-- Dossier/Detail Card -->
-    <div class="col-md-5 col-12">
+    <div class="col-md-4 col-12">
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background-color: var(--bg-secondary);">
             <div class="d-flex align-items-center gap-2 mb-3">
                 <i class="bi bi-folder2-open text-primary fs-3"></i>
@@ -43,51 +43,10 @@
                 </tr>
             </table>
         </div>
-
-        <div class="card border-0 shadow-sm rounded-4 p-4" style="background-color: var(--bg-secondary);">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <i class="bi bi-shield-shaded text-primary fs-3"></i>
-                <h5 class="fw-bold mb-0" style="color: var(--text-primary);">Majelis Hakim & PP</h5>
-            </div>
-
-            @php
-                $ketua = $perkara->hakims->firstWhere('pivot.jabatan', 'Ketua Majelis');
-                $anggotas = $perkara->hakims->filter(function($h) { return $h->pivot->jabatan === 'Hakim Anggota'; });
-                $pp = $perkara->paniteraPenggantis->first();
-            @endphp
-
-            <div class="mb-3 py-2 border-bottom">
-                <span class="text-muted small d-block">Ketua Majelis Hakim</span>
-                <span class="fw-bold text-dark">{{ $ketua->nama ?? '-' }}</span>
-                @if($ketua)
-                    <small class="text-muted d-block"><i class="bi bi-whatsapp text-success me-1"></i>{{ $ketua->nomor_whatsapp }}</small>
-                @endif
-            </div>
-
-            <div class="mb-3 py-2 border-bottom">
-                <span class="text-muted small d-block">Hakim Anggota</span>
-                @forelse($anggotas as $ang)
-                    <div class="mb-1">
-                        <span class="fw-semibold text-dark d-block">&bull; {{ $ang->nama }}</span>
-                        <small class="text-muted d-block ps-2"><i class="bi bi-whatsapp text-success me-1"></i>{{ $ang->nomor_whatsapp }}</small>
-                    </div>
-                @empty
-                    <span class="text-muted">-</span>
-                @endforelse
-            </div>
-
-            <div class="py-2">
-                <span class="text-muted small d-block">Panitera Pengganti (PP)</span>
-                <span class="fw-bold text-dark">{{ $pp->nama ?? '-' }}</span>
-                @if($pp)
-                    <small class="text-muted d-block"><i class="bi bi-whatsapp text-success me-1"></i>{{ $pp->nomor_whatsapp }}</small>
-                @endif
-            </div>
-        </div>
     </div>
 
     <!-- Hearing Timeline / Schedules Card -->
-    <div class="col-md-7 col-12">
+    <div class="col-md-8 col-12">
         <div class="card border-0 shadow-sm rounded-4 h-100" style="background-color: var(--bg-secondary);">
             <div class="card-header border-0 bg-transparent p-4 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">

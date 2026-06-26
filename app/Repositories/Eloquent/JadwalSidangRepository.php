@@ -16,7 +16,7 @@ class JadwalSidangRepository extends BaseRepository implements JadwalSidangRepos
     public function getTodaySchedules()
     {
         return $this->model->whereDate('tanggal_sidang', Carbon::today())
-            ->with(['perkara.hakims', 'perkara.paniteraPenggantis', 'ruangSidang', 'pihakSidangs.kehadiran'])
+            ->with(['perkara', 'ruangSidang', 'pihakSidangs.kehadiran'])
             ->orderBy('jam_sidang', 'asc')
             ->get();
     }

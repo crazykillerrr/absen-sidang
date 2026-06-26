@@ -28,6 +28,6 @@ class Notifikasi extends Model
      */
     public function jadwalSidang(): BelongsTo
     {
-        return $this->belongsTo(JadwalSidang::class, 'jadwal_sidang_id');
+        return $this->belongsTo(JadwalSidang::class, 'jadwal_sidang_id')->withTrashed();
     }
 }

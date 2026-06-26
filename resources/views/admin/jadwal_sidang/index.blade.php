@@ -47,7 +47,6 @@
                         <th class="border-0">Agenda</th>
                         <th class="border-0">Ruang Sidang</th>
                         <th class="border-0 text-center">Sumber</th>
-                        <th class="border-0">Pihak Terdaftar</th>
                         <th class="border-0 text-center" style="width: 250px;">Aksi</th>
                     </tr>
                 </thead>
@@ -55,8 +54,6 @@
                     @forelse ($jadwals as $jadwal)
                         @php
                             $totalPihak = $jadwal->pihakSidangs->count();
-                            $hadirPihak = $jadwal->pihakSidangs->filter(function($p) { return $p->kehadiran; })->count();
-                            $lengkap = ($totalPihak > 0 && $hadirPihak === $totalPihak);
                             
                             $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
                                 ? $jadwal->tanggal_sidang->format('d-m-Y') 
@@ -82,27 +79,10 @@
                                     <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1.5 fw-semibold">MANUAL</span>
                                 @endif
                             </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="progress flex-grow-1" style="height: 6px; min-width: 80px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $totalPihak > 0 ? ($hadirPihak / $totalPihak) * 100 : 0 }}%"></div>
-                                    </div>
-                                    <span class="small fw-semibold">{{ $hadirPihak }}/{{ $totalPihak }}</span>
-                                </div>
-                                <span class="small text-muted">
-                                    @if ($totalPihak === 0)
-                                        <span class="text-secondary">Pihak kosong</span>
-                                    @elseif ($lengkap)
-                                        <span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>Hadir Lengkap</span>
-                                    @else
-                                        <span class="text-warning fw-medium">Belum lengkap</span>
-                                    @endif
-                                </span>
-                            </td>
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <a href="{{ route('admin.pihak-sidang.index', $jadwal->id) }}" class="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-semibold small" title="Kelola Litigant/Pihak">
-                                        <i class="bi bi-people me-1"></i>Litigant ({{ $totalPihak }})
+                                        <i class="bi bi-people me-1"></i>Pihak Hadir ({{ $totalPihak }})
                                     </a>
                                     <a href="{{ route('admin.jadwal-sidang.edit', $jadwal->id) }}" class="btn btn-sm btn-outline-primary border-0 rounded-circle p-2" title="Edit">
                                         <i class="bi bi-pencil-square"></i>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Monitoring & Absensi Persidangan - PTUN Bandar Lampung</title>
+    <title>SI-OCID : Sistem Informasi Online Check-In Diri - PTUN Bandar Lampung</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -188,9 +188,59 @@
                 font-size: 0.95rem;
             }
         }
+
+        /* Fixed Background Slideshow Carousel */
+        .portal-bg-slideshow {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 1 !important;
+            overflow: hidden !important;
+        }
+
+        .portal-bg-slideshow .slide {
+            position: absolute !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            opacity: 0;
+            transition: opacity 1.8s ease-in-out !important;
+            z-index: 1 !important;
+        }
+
+        .portal-bg-slideshow .slide.active {
+            opacity: 1 !important;
+        }
+
+        /* Dark overlay to make sure text remains readable */
+        .portal-bg-slideshow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 24, 14, 0.78); /* Dark forest green overlay matching PTUN */
+            z-index: 2;
+        }
+
+        /* Hide background orbs to let images shine */
+        .gateway-bg .orb {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="gateway-bg">
+    <!-- Slideshow Background -->
+    <section class="portal-bg-slideshow">
+        <div class="slide" style="background-image: url('{{ asset('images/bg-building.png') }}');"></div>
+        <div class="slide" style="background-image: url('{{ asset('images/bg-lobby.png') }}');"></div>
+        <div class="slide" style="background-image: url('{{ asset('images/bg-entrance.png') }}');"></div>
+    </section>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
@@ -203,14 +253,14 @@
                 </div>
                 
                 <h1 class="app-title mb-1 text-uppercase">PTUN Bandar Lampung</h1>
-                <p class="fs-5 app-subtitle mb-4">Sistem Absensi & Monitoring Kehadiran Persidangan Berbasis QR Code & Notifikasi WhatsApp</p>
+                <p class="fs-5 app-subtitle mb-4">SI-OCID: Sistem Informasi Online Check-In Diri</p>
 
                 <div class="row justify-content-center">
                     <div class="col-md-10">
                         <!-- Card Absensi Mandiri (Publik) -->
                         <div class="card glass-card-portal p-4 text-center">
                             <h3 class="fw-bold fs-3 mb-2 text-white">Absensi Mandiri Sidang</h3>
-                            <p class="text-white-50 mb-4 px-md-3">Silakan lakukan absensi persidangan secara mandiri dengan memindai kode QR atau klik tombol di bawah untuk mengisi formulir kehadiran.</p>
+                            <p class="text-white-50 mb-4 px-md-3">Silakan lakukan absensi persidangan secara mandiri dengan mengklik tombol di bawah untuk mengisi formulir kehadiran.</p>
                             
                             <div class="col-md-8 mx-auto">
                                 <a href="{{ route('public.absensi') }}" class="btn btn-portal-primary w-100 shadow-sm d-flex align-items-center justify-content-center gap-2">
@@ -227,5 +277,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Script to cycle backgrounds -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.portal-bg-slideshow .slide');
+            if (slides.length === 0) return;
+            
+            let currentSlide = 0;
+            slides[currentSlide].classList.add('active');
+            
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 6000); // Ganti gambar setiap 6 detik
+        });
+
+        // Force page refresh if loaded from browser history back/forward cache
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>

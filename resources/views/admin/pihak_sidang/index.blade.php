@@ -9,21 +9,18 @@
     </a>
     <div class="d-flex align-items-center justify-content-between flex-wrap">
         <div>
-            <h4 class="fw-bold mb-1" style="color: var(--text-primary);">Pihak yang Wajib Hadir</h4>
+            <h4 class="fw-bold mb-1" style="color: var(--text-primary);">Daftar Kehadiran Pihak</h4>
             <p class="text-muted mb-0">Sidang Perkara: <strong class="text-primary">{{ $jadwal->perkara->nomor_perkara }}</strong> (Agenda: {{ $jadwal->agenda_sidang }})</p>
         </div>
-        <a href="{{ route('admin.pihak-sidang.create', $jadwal->id) }}" class="btn btn-primary rounded-pill px-4 mt-2 mt-sm-0">
-            <i class="bi bi-plus-lg me-2"></i>Tambah Pihak
-        </a>
     </div>
 </div>
 
 <div class="row g-4">
-    <!-- Tabel Pihak Wajib Hadir -->
+    <!-- Tabel Kehadiran Pihak -->
     <div class="col-lg-8 col-12">
         <div class="card border-0 shadow-sm rounded-4" style="background-color: var(--bg-secondary);">
             <div class="card-header border-0 bg-transparent p-4">
-                <h5 class="fw-bold mb-0" style="color: var(--text-primary);">Daftar Roster Kehadiran</h5>
+                <h5 class="fw-bold mb-0" style="color: var(--text-primary);">Daftar Kehadiran Pihak</h5>
             </div>
             
             <div class="card-body p-0">
@@ -39,7 +36,7 @@
                                 <th class="border-0 text-center" style="width: 130px;">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="pihak-table-body">
                             @forelse ($pihaks as $index => $pihak)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
@@ -73,7 +70,7 @@
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-5">
                                         <i class="bi bi-person-x fs-1 d-block mb-3"></i>
-                                        Belum ada pihak yang diwajibkan hadir pada sidang ini.
+                                        Belum ada pihak yang melakukan absensi hadir untuk sidang ini.
                                     </td>
                                 </tr>
                             @endforelse
@@ -120,4 +117,84 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function fetchAttendanceData() {
+        fetch('{{ route('admin.pihak-sidang.data', $jadwal->id) }}', {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.reload();
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                const tbody = document.getElementById('pihak-table-body');
+                if (!tbody) return;
+                
+                if (data.pihaks.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-person-x fs-1 d-block mb-3"></i>
+                                Belum ada pihak yang melakukan absensi hadir untuk sidang ini.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+                
+                let html = '';
+                data.pihaks.forEach((pihak, index) => {
+                    let statusHtml = '';
+                    if (pihak.kehadiran) {
+                        statusHtml = `
+                            <span class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>${pihak.kehadiran_time} WIB</span>
+                            <small class="text-muted d-block" style="font-size: 0.75rem;">Absen via QR</small>`;
+                    } else {
+                        statusHtml = `<span class="text-danger fw-semibold"><i class="bi bi-clock me-1"></i>Belum Hadir</span>`;
+                    }
+                    
+                    const editUrl = `{{ url('admin/pihak-sidang') }}/${pihak.id}/edit`;
+                    const deleteUrl = `{{ url('admin/pihak-sidang') }}/${pihak.id}`;
+                    const csrfToken = '{{ csrf_token() }}';
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong style="color: var(--text-primary);">${pihak.nama}</strong></td>
+                            <td><span class="badge bg-light text-dark border">${pihak.status_pihak}</span></td>
+                            <td>${pihak.nomor_hp || '-'}</td>
+                            <td>${statusHtml}</td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <a href="${editUrl}" class="btn btn-sm btn-outline-primary border-0 rounded-circle p-2" title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="${deleteUrl}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pihak wajib hadir ini?')">
+                                        <input type="hidden" name="_token" value="${csrfToken}">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2" title="Hapus">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+                tbody.innerHTML = html;
+            })
+            .catch(err => console.error('Error fetching real-time attendance:', err));
+    }
+    
+    // Poll every 3 seconds
+    setInterval(fetchAttendanceData, 3000);
+});
+</script>
 @endsection

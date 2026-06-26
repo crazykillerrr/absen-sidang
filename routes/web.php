@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\HakimController;
-use App\Http\Controllers\Admin\PaniteraPenggantiController;
 use App\Http\Controllers\Admin\RuangSidangController;
 use App\Http\Controllers\Admin\PerkaraController;
 use App\Http\Controllers\Admin\JadwalSidangController;
@@ -22,7 +20,7 @@ use App\Http\Controllers\Admin\LaporanController;
 // Gateway Portal PTUN
 Route::get('/', function () {
     return view('portal');
-})->name('portal');
+})->middleware('guest')->name('portal');
 
 // Rute Absensi Publik (Tanpa Login)
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('public.absensi');
@@ -39,12 +37,8 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData'])->name('dashboard.data');
 
-    // CRUD Hakim
-    Route::resource('hakim', HakimController::class);
-
-    // CRUD Panitera Pengganti
-    Route::resource('panitera-pengganti', PaniteraPenggantiController::class);
 
     // CRUD Ruang Sidang
     Route::resource('ruang-sidang', RuangSidangController::class);
@@ -54,9 +48,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // CRUD Jadwal Sidang
     Route::resource('jadwal-sidang', JadwalSidangController::class);
+    Route::post('jadwal-sidang/{jadwal_sidang}/panggil', [JadwalSidangController::class, 'panggil'])->name('jadwal-sidang.panggil');
 
     // CRUD Pihak Berperkara per Jadwal Sidang
     Route::get('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'index'])->name('pihak-sidang.index');
+    Route::get('jadwal-sidang/{jadwal_sidang}/pihak-data', [PihakSidangController::class, 'getAttendanceData'])->name('pihak-sidang.data');
     Route::get('jadwal-sidang/{jadwal_sidang}/pihak/create', [PihakSidangController::class, 'create'])->name('pihak-sidang.create');
     Route::post('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'store'])->name('pihak-sidang.store');
     Route::get('pihak-sidang/{pihak_sidang}/edit', [PihakSidangController::class, 'edit'])->name('pihak-sidang.edit');
@@ -68,6 +64,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Laporan
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('laporan-data', [LaporanController::class, 'getLaporanData'])->name('laporan.data');
     Route::get('laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
     Route::get('laporan/export-excel', [LaporanController::class, 'exportExcel'])->name('laporan.export-excel');
 

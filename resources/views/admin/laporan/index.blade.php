@@ -68,67 +68,209 @@
     </div>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4" style="background-color: var(--bg-secondary);">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover table-custom mb-0 border-0">
-                <thead>
-                    <tr>
-                        <th class="border-0">No</th>
-                        <th class="border-0">Nomor Perkara</th>
-                        <th class="border-0">Agenda Sidang</th>
-                        <th class="border-0">Tanggal Sidang</th>
-                        <th class="border-0">Nama Pihak</th>
-                        <th class="border-0">Status Pihak</th>
-                        <th class="border-0">Nomor HP</th>
-                        <th class="border-0">Waktu Absen</th>
-                        <th class="border-0 text-center">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($kehadirans as $index => $kehadiran)
-                        @php
-                            $pihak = $kehadiran->pihakSidang;
-                            $jadwal = $pihak->jadwalSidang;
-                            $perkara = $jadwal->perkara;
-                            
-                            $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
-                                ? $jadwal->tanggal_sidang->format('d-m-Y') 
-                                : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
-                        @endphp
-                        <tr>
-                            <td>{{ $kehadirans->firstItem() + $index }}</td>
-                            <td><strong style="color: var(--text-primary);">{{ $perkara->nomor_perkara }}</strong></td>
-                            <td>{{ $jadwal->agenda_sidang }}</td>
-                            <td>
-                                <span>{{ $tanggal }}</span>
-                                <small class="text-muted d-block">{{ substr($jadwal->jam_sidang, 0, 5) }} WIB</small>
-                            </td>
-                            <td><strong>{{ $pihak->nama }}</strong></td>
-                            <td><span class="badge bg-light text-dark border">{{ $pihak->status_pihak }}</span></td>
-                            <td>{{ $pihak->nomor_hp }}</td>
-                            <td><span class="text-success fw-semibold"><i class="bi bi-clock me-1"></i>{{ $kehadiran->waktu_hadir->format('H:i') }} WIB</span></td>
-                            <td class="text-center">
-                                <span class="badge bg-success bg-opacity-10 text-success badge-custom"><i class="bi bi-check me-1"></i>{{ $kehadiran->status_hadir }}</span>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center text-muted py-5">
-                                <i class="bi bi-file-earmark-bar-graph fs-1 d-block mb-3"></i>
-                                Data kehadiran tidak ditemukan untuk filter ini.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+@php
+    $groupedKehadirans = $kehadirans->groupBy(function($kehadiran) {
+        return $kehadiran->pihakSidang->jadwalSidang->perkara->nomor_perkara;
+    });
+@endphp
+
+<div id="laporan-containers">
+    @forelse ($groupedKehadirans as $nomorPerkara => $items)
+        <div class="card border-0 shadow-sm rounded-4 mb-4" style="background-color: var(--bg-secondary);">
+            <div class="card-header border-0 bg-transparent p-4 pb-2">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h5 class="fw-bold mb-0 text-primary">
+                        <i class="bi bi-folder2-open me-2"></i>Perkara: <span class="text-dark">{{ $nomorPerkara }}</span>
+                    </h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill small fw-semibold">
+                        {{ $items->count() }} Pihak Hadir
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-custom mb-0 border-0">
+                        <thead>
+                            <tr>
+                                <th class="border-0">No</th>
+                                <th class="border-0">Agenda Sidang</th>
+                                <th class="border-0">Tanggal Sidang</th>
+                                <th class="border-0">Nama Pihak</th>
+                                <th class="border-0">Status Pihak</th>
+                                <th class="border-0">Nomor HP</th>
+                                <th class="border-0">Waktu Absen</th>
+                                <th class="border-0 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($items as $subIndex => $kehadiran)
+                                @php
+                                    $pihak = $kehadiran->pihakSidang;
+                                    $jadwal = $pihak->jadwalSidang;
+                                    
+                                    $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
+                                        ? $jadwal->tanggal_sidang->format('d-m-Y') 
+                                        : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
+                                @endphp
+                                <tr>
+                                    <td>{{ $subIndex + 1 }}</td>
+                                    <td>{{ $jadwal->agenda_sidang }}</td>
+                                    <td>
+                                        <span>{{ $tanggal }}</span>
+                                        <small class="text-muted d-block">{{ substr($jadwal->jam_sidang, 0, 5) }} WIB</small>
+                                    </td>
+                                    <td><strong>{{ $pihak->nama }}</strong></td>
+                                    <td><span class="badge bg-light text-dark border">{{ $pihak->status_pihak }}</span></td>
+                                    <td>{{ $pihak->nomor_hp }}</td>
+                                    <td><span class="text-success fw-semibold"><i class="bi bi-clock me-1"></i>{{ $kehadiran->waktu_hadir->format('H:i') }} WIB</span></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success bg-opacity-10 text-success badge-custom"><i class="bi bi-check me-1"></i>{{ $kehadiran->status_hadir }}</span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-    
+    @empty
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center text-muted" style="background-color: var(--bg-secondary);">
+            <i class="bi bi-file-earmark-bar-graph fs-1 d-block mb-3"></i>
+            Data kehadiran tidak ditemukan untuk filter ini.
+        </div>
+    @endforelse
+</div>
+
+<div id="laporan-pagination-container">
     @if($kehadirans->hasPages())
-        <div class="card-footer bg-transparent border-0 p-4">
+        <div class="card-footer bg-transparent border-0 p-4 pt-0">
             {{ $kehadirans->links() }}
         </div>
     @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function fetchLaporanData() {
+        const queryParams = new URLSearchParams(window.location.search);
+        fetch('{{ route('admin.laporan.data') }}?' + queryParams.toString(), {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.reload();
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+                const container = document.getElementById('laporan-containers');
+                if (!container) return;
+
+                if (data.items.length === 0) {
+                    container.innerHTML = `
+                        <div class="card border-0 shadow-sm rounded-4 p-5 text-center text-muted" style="background-color: var(--bg-secondary);">
+                            <i class="bi bi-file-earmark-bar-graph fs-1 d-block mb-3"></i>
+                            Data kehadiran tidak ditemukan untuk filter ini.
+                        </div>`;
+                    
+                    const pagContainer = document.getElementById('laporan-pagination-container');
+                    if (pagContainer) pagContainer.innerHTML = '';
+                    return;
+                }
+
+                // Group items by nomor_perkara
+                const grouped = {};
+                data.items.forEach(item => {
+                    if (!grouped[item.nomor_perkara]) {
+                        grouped[item.nomor_perkara] = [];
+                    }
+                    grouped[item.nomor_perkara].push(item);
+                });
+
+                let html = '';
+                Object.keys(grouped).forEach(nomorPerkara => {
+                    const items = grouped[nomorPerkara];
+                    
+                    html += `
+                        <div class="card border-0 shadow-sm rounded-4 mb-4" style="background-color: var(--bg-secondary);">
+                            <div class="card-header border-0 bg-transparent p-4 pb-2">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h5 class="fw-bold mb-0 text-primary">
+                                        <i class="bi bi-folder2-open me-2"></i>Perkara: <span class="text-dark">${nomorPerkara}</span>
+                                    </h5>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill small fw-semibold">
+                                        ${items.length} Pihak Hadir
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-custom mb-0 border-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-0">No</th>
+                                                <th class="border-0">Agenda Sidang</th>
+                                                <th class="border-0">Tanggal Sidang</th>
+                                                <th class="border-0">Nama Pihak</th>
+                                                <th class="border-0">Status Pihak</th>
+                                                <th class="border-0">Nomor HP</th>
+                                                <th class="border-0">Waktu Absen</th>
+                                                <th class="border-0 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+                    
+                    items.forEach((item, index) => {
+                        html += `
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${item.agenda_sidang}</td>
+                                                <td>
+                                                    <span>${item.tanggal_sidang}</span>
+                                                    <small class="text-muted d-block">${item.jam_sidang}</small>
+                                                </td>
+                                                <td><strong>${item.pihak_nama}</strong></td>
+                                                <td><span class="badge bg-light text-dark border">${item.pihak_status}</span></td>
+                                                <td>${item.pihak_nomor_hp || '-'}</td>
+                                                <td><span class="text-success fw-semibold"><i class="bi bi-clock me-1"></i>${item.waktu_hadir}</span></td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-success bg-opacity-10 text-success badge-custom"><i class="bi bi-check me-1"></i>${item.status_hadir}</span>
+                                                </td>
+                                            </tr>`;
+                    });
+                    
+                    html += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                
+                container.innerHTML = html;
+
+                const pagContainer = document.getElementById('laporan-pagination-container');
+                if (pagContainer) {
+                    if (data.has_pages) {
+                        pagContainer.innerHTML = `
+                            <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                                ${data.pagination_links}
+                            </div>`;
+                    } else {
+                        pagContainer.innerHTML = '';
+                    }
+                }
+            })
+            .catch(err => console.error('Error fetching real-time laporan:', err));
+    }
+
+    // Poll every 3 seconds
+    setInterval(fetchLaporanData, 3000);
+});
+</script>
 @endsection

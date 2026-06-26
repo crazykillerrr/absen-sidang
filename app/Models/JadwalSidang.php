@@ -38,7 +38,7 @@ class JadwalSidang extends Model
      */
     public function perkara(): BelongsTo
     {
-        return $this->belongsTo(Perkara::class, 'perkara_id');
+        return $this->belongsTo(Perkara::class, 'perkara_id')->withTrashed();
     }
 
     /**
@@ -46,7 +46,7 @@ class JadwalSidang extends Model
      */
     public function ruangSidang(): BelongsTo
     {
-        return $this->belongsTo(RuangSidang::class, 'ruang_sidang_id');
+        return $this->belongsTo(RuangSidang::class, 'ruang_sidang_id')->withTrashed();
     }
 
     /**

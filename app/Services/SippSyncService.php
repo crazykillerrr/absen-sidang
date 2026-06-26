@@ -220,6 +220,18 @@ class SippSyncService
                                 $jenisPerkara = $details['Jenis Perkara'] ?? null;
                                 $pihak = $details['Pihak'] ?? null;
                                 $sidangKeliling = $details['Sidang Keliling'] ?? $sidangKeliling;
+
+                                $jamSidangRaw = $details['Jam Sidang'] ?? null;
+                                if ($jamSidangRaw) {
+                                    if (preg_match('/(\d{2}[:\.]\d{2}([:\.]\d{2})?)/', $jamSidangRaw, $jamMatches)) {
+                                        $timeStr = str_replace('.', ':', $jamMatches[1]);
+                                        if (strlen($timeStr) === 5) {
+                                            $time = $timeStr . ':00';
+                                        } else {
+                                            $time = $timeStr;
+                                        }
+                                    }
+                                }
                             }
                         } catch (\Exception $ex) {
                             Log::warning("SippSyncService: Gagal sinkronisasi detail jadwal $nomorPerkara. Error: " . $ex->getMessage());

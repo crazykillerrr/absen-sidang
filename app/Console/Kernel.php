@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sipp:sync')->dailyAt('06:00');
         $schedule->command('sipp:sync')->dailyAt('12:00');
         $schedule->command('sipp:sync')->dailyAt('18:00');
+        $schedule->command('jadwal:send-reminders')->dailyAt('08:00');
     }
 
     /**

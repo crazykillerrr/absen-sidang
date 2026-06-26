@@ -53,22 +53,25 @@ class KehadiranExport implements FromCollection, WithHeadings, WithMapping, Shou
     {
         $this->rowNum++;
         $pihak = $kehadiran->pihakSidang;
-        $jadwal = $pihak->jadwalSidang;
-        $perkara = $jadwal->perkara;
+        $jadwal = $pihak?->jadwalSidang;
+        $perkara = $jadwal?->perkara;
 
-        $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
-            ? $jadwal->tanggal_sidang->format('d-m-Y') 
-            : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
+        $tanggal = '-';
+        if ($jadwal?->tanggal_sidang) {
+            $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
+                ? $jadwal->tanggal_sidang->format('d-m-Y') 
+                : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
+        }
 
         return [
             $this->rowNum,
-            $perkara->nomor_perkara,
-            $jadwal->agenda_sidang,
+            $perkara?->nomor_perkara ?? '-',
+            $jadwal?->agenda_sidang ?? '-',
             $tanggal,
-            substr($jadwal->jam_sidang, 0, 5),
-            $pihak->nama,
-            $pihak->status_pihak,
-            $pihak->nomor_hp,
+            $jadwal?->jam_sidang ? substr($jadwal->jam_sidang, 0, 5) : '-',
+            $pihak?->nama ?? '-',
+            $pihak?->status_pihak ?? '-',
+            $pihak?->nomor_hp ?? '-',
             $kehadiran->waktu_hadir ? $kehadiran->waktu_hadir->format('d-m-Y H:i:s') : '-',
             $kehadiran->status_hadir,
         ];

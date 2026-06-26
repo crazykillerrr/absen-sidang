@@ -19,6 +19,7 @@ class PihakSidang extends Model
         'nama',
         'nomor_hp',
         'status_pihak',
+        'email',
     ];
 
     /**
@@ -26,7 +27,7 @@ class PihakSidang extends Model
      */
     public function jadwalSidang(): BelongsTo
     {
-        return $this->belongsTo(JadwalSidang::class, 'jadwal_sidang_id');
+        return $this->belongsTo(JadwalSidang::class, 'jadwal_sidang_id')->withTrashed();
     }
 
     /**

@@ -103,56 +103,68 @@
         </tr>
     </table>
 
-    <table class="table-report">
-        <thead>
-            <tr>
-                <th style="width: 25px; text-align: center;">No</th>
-                <th style="width: 130px;">Nomor Perkara</th>
-                <th>Agenda Sidang</th>
-                <th style="width: 100px;">Jadwal Sidang</th>
-                <th>Nama Pihak</th>
-                <th style="width: 110px;">Status Pihak</th>
-                <th style="width: 90px;">Nomor HP</th>
-                <th style="width: 90px;">Waktu Absen</th>
-                <th style="width: 60px; text-align: center;">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($kehadirans as $index => $kehadiran)
-                @php
-                    $pihak = $kehadiran->pihakSidang;
-                    $jadwal = $pihak->jadwalSidang;
-                    $perkara = $jadwal->perkara;
-                    
-                    $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
-                        ? $jadwal->tanggal_sidang->format('d-m-Y') 
-                        : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
-                @endphp
+    @php
+        $groupedKehadirans = $kehadirans->groupBy(function($kehadiran) {
+            return $kehadiran->pihakSidang->jadwalSidang->perkara->nomor_perkara;
+        });
+    @endphp
+
+    @forelse ($groupedKehadirans as $nomorPerkara => $items)
+        <h3 style="color: #0b2a49; margin-top: 25px; margin-bottom: 10px; font-size: 13px; border-bottom: 2px solid #0b2a49; padding-bottom: 3px;">
+            Perkara: {{ $nomorPerkara }}
+        </h3>
+        <table class="table-report" style="margin-bottom: 20px;">
+            <thead>
                 <tr>
-                    <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td><strong>{{ $perkara->nomor_perkara }}</strong></td>
-                    <td>{{ $jadwal->agenda_sidang }}</td>
-                    <td>
-                        {{ $tanggal }}<br>
-                        <small style="color: #666666;">{{ substr($jadwal->jam_sidang, 0, 5) }} WIB</small>
-                    </td>
-                    <td><strong>{{ $pihak->nama }}</strong></td>
-                    <td>{{ $pihak->status_pihak }}</td>
-                    <td>{{ $pihak->nomor_hp }}</td>
-                    <td>{{ $kehadiran->waktu_hadir->format('H:i') }} WIB</td>
-                    <td style="text-align: center;">
-                        <span class="status-badge">{{ $kehadiran->status_hadir }}</span>
-                    </td>
+                    <th style="width: 30px; text-align: center;">No</th>
+                    <th>Agenda Sidang</th>
+                    <th style="width: 110px;">Jadwal Sidang</th>
+                    <th>Nama Pihak</th>
+                    <th style="width: 120px;">Status Pihak</th>
+                    <th style="width: 100px;">Nomor HP</th>
+                    <th style="width: 100px;">Waktu Absen</th>
+                    <th style="width: 70px; text-align: center;">Status</th>
                 </tr>
-            @empty
+            </thead>
+            <tbody>
+                @foreach ($items as $subIndex => $kehadiran)
+                    @php
+                        $pihak = $kehadiran->pihakSidang;
+                        $jadwal = $pihak->jadwalSidang;
+                        
+                        $tanggal = $jadwal->tanggal_sidang instanceof \Carbon\Carbon 
+                            ? $jadwal->tanggal_sidang->format('d-m-Y') 
+                            : \Carbon\Carbon::parse($jadwal->tanggal_sidang)->format('d-m-Y');
+                    @endphp
+                    <tr>
+                        <td style="text-align: center;">{{ $subIndex + 1 }}</td>
+                        <td>{{ $jadwal->agenda_sidang }}</td>
+                        <td>
+                            {{ $tanggal }}<br>
+                            <small style="color: #666666;">{{ substr($jadwal->jam_sidang, 0, 5) }} WIB</small>
+                        </td>
+                        <td><strong>{{ $pihak->nama }}</strong></td>
+                        <td>{{ $pihak->status_pihak }}</td>
+                        <td>{{ $pihak->nomor_hp }}</td>
+                        <td>{{ $kehadiran->waktu_hadir->format('H:i') }} WIB</td>
+                        <td style="text-align: center;">
+                            <span class="status-badge">{{ $kehadiran->status_hadir }}</span>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @empty
+        <table class="table-report">
+            <tbody>
                 <tr>
-                    <td colspan="9" style="text-align: center; color: #666666; padding: 30px;">
+                    <td colspan="8" style="text-align: center; color: #666666; padding: 30px;">
                         Tidak ada data kehadiran yang tercatat dalam periode saringan.
                     </td>
                 </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    @endforelse
 
     <div class="footer">
         <div class="signature-section">

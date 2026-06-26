@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Persidangan PTUN Bandar Lampung</title>
+    <title>Panggilan Persidangan PTUN Bandar Lampung</title>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -50,8 +50,8 @@
         }
         .badge {
             display: inline-block;
-            background-color: #d1fae5;
-            color: #065f46;
+            background-color: #fee2e2;
+            color: #991b1b;
             font-size: 12px;
             font-weight: 600;
             padding: 6px 14px;
@@ -136,14 +136,14 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
-                <h1>MONITORING PERSIDANGAN</h1>
+                <h1>PANGGILAN PERSIDANGAN</h1>
                 <p>Pengadilan Tata Usaha Negara Bandar Lampung</p>
             </div>
             
             <div class="content">
-                <div class="badge">Kehadiran Lengkap</div>
-                <h2 class="headline">Pemberitahuan Persidangan Siap Dimulai</h2>
-                <p class="intro">Yth. Bapak/Ibu Pihak Sidang (Saksi / Ahli / Pihak Berperkara), diberitahukan bahwa seluruh pihak yang diwajibkan hadir pada jadwal sidang di bawah ini telah lengkap melakukan absensi:</p>
+                <div class="badge">Panggilan Masuk</div>
+                <h2 class="headline">Mohon Segera Memasuki Ruang Sidang</h2>
+                <p class="intro">Yth. Bapak/Ibu <strong>{{ $pihak->nama }}</strong> ({{ $pihak->status_pihak }}), diberitahukan bahwa sidang perkara Anda akan segera dimulai. Silakan segera menuju dan memasuki ruang sidang berikut:</p>
                 
                 <div class="details-card">
                     <div class="detail-row">
@@ -159,13 +159,13 @@
                         <div class="detail-value">{{ $jadwal->ruangSidang->nama_ruang }}</div>
                     </div>
                     <div class="detail-row">
-                        <div class="detail-label">Waktu Pelaksanaan</div>
-                        <div class="detail-value">{{ $waktu }}</div>
+                        <div class="detail-label">Waktu Panggilan</div>
+                        <div class="detail-value">{{ \Carbon\Carbon::now()->format('H:i') }} WIB</div>
                     </div>
                 </div>
 
                 <div class="action-box">
-                    <p class="action-text"><strong>Rekomendasi Tindakan:</strong> Silakan mempersiapkan diri dan berkas persidangan Anda. Mohon bersiap-siap untuk segera dipanggil memasuki ruang sidang.</p>
+                    <p class="action-text"><strong>Rekomendasi Tindakan:</strong> Segera masuki ruang sidang dengan tertib dan siapkan dokumen yang diperlukan untuk persidangan.</p>
                 </div>
             </div>
             

@@ -84,38 +84,45 @@ class AbsensiController extends Controller
     {
         $validated = $request->validate([
             'jadwal_sidang_id' => 'required|exists:jadwal_sidang,id',
-            'pihak_sidang_id' => 'required|exists:pihak_sidang,id',
+            'status_pihak' => 'required|string|max:100',
             'nama' => 'required|string|max:255',
             'nomor_hp' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
         ], [
             'jadwal_sidang_id.required' => 'Sidang wajib dipilih.',
-            'pihak_sidang_id.required' => 'Pilih data pihak wajib diisi.',
-            'nama.required' => 'Nama wajib diisi.',
+            'status_pihak.required' => 'Status kedudukan wajib dipilih.',
+            'nama.required' => 'Nama lengkap wajib diisi.',
             'nomor_hp.required' => 'Nomor HP wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
         ]);
 
-        $pihakSidangId = $validated['pihak_sidang_id'];
         $jadwalId = $validated['jadwal_sidang_id'];
 
-        // Periksa apakah pihak tersebut sudah melakukan absen sebelumnya
-        $sudahAbsen = Kehadiran::where('pihak_sidang_id', $pihakSidangId)->exists();
-        if ($sudahAbsen) {
+        // Cek jika sudah terdaftar check-in sebelumnya
+        $exists = PihakSidang::where('jadwal_sidang_id', $jadwalId)
+            ->where('nama', $validated['nama'])
+            ->where('status_pihak', $validated['status_pihak'])
+            ->exists();
+            
+        if ($exists) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Pihak Berperkara yang Anda pilih sudah melakukan absensi untuk jadwal sidang ini.');
+                ->with('error', 'Pihak dengan nama dan kedudukan tersebut sudah melakukan absensi untuk sidang ini.');
         }
 
-        // Ambil data pihak sidang untuk mencocokkan & memvalidasi
-        $pihak = PihakSidang::find($pihakSidangId);
-
-        // Opsional: kita update nomor HP pihak jika berbeda dengan data pendaftaran
-        if ($pihak->nomor_hp !== $validated['nomor_hp']) {
-            $pihak->update(['nomor_hp' => $validated['nomor_hp']]);
-        }
+        // Buat pihak sidang baru secara dinamis
+        $pihak = PihakSidang::create([
+            'jadwal_sidang_id' => $jadwalId,
+            'nama' => $validated['nama'],
+            'nomor_hp' => $validated['nomor_hp'],
+            'status_pihak' => $validated['status_pihak'],
+            'email' => $validated['email'],
+        ]);
 
         // Catat Kehadiran ke database
         $this->kehadiranService->recordAttendance([
-            'pihak_sidang_id' => $pihakSidangId,
+            'pihak_sidang_id' => $pihak->id,
             'waktu_hadir' => Carbon::now(),
             'status_hadir' => 'hadir'
         ], $jadwalId);
