@@ -80,6 +80,11 @@
                         <i class="bi bi-file-earmark-bar-graph"></i> Laporan Kehadiran
                     </a>
                 </li>
+                <li class="{{ Route::is('admin.daftar-hadir-hari-ini') ? 'active' : '' }}">
+                    <a href="{{ route('admin.daftar-hadir-hari-ini') }}">
+                        <i class="bi bi-person-check-fill"></i> Kehadiran Hari Ini
+                    </a>
+                </li>
                 <li class="{{ Route::is('admin.integrasi-sipp.*') ? 'active' : '' }}">
                     <a href="#sippSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Route::is('admin.integrasi-sipp.*') ? 'true' : 'false' }}" class="dropdown-toggle d-flex align-items-center justify-content-between w-100">
                         <span class="d-flex align-items-center gap-2">

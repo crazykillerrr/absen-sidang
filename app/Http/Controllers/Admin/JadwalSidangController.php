@@ -143,9 +143,13 @@ class JadwalSidangController extends Controller
 
     public function panggil(int $id, \App\Services\WhatsAppNotificationService $waService)
     {
-        $jadwal = \App\Models\JadwalSidang::with(['perkara', 'pihakSidangs', 'ruangSidang'])->findOrFail($id);
+        $jadwal = \App\Models\JadwalSidang::with(['perkara', 'pihakSidangs.kehadiran', 'ruangSidang'])->findOrFail($id);
         $perkara = $jadwal->perkara;
-        $pihaks = $jadwal->pihakSidangs;
+        
+        // Hanya memanggil pihak yang sudah melakukan absensi (mempunyai catatan kehadiran)
+        $pihaks = $jadwal->pihakSidangs->filter(function ($pihak) {
+            return $pihak->kehadiran !== null;
+        });
 
         if ($pihaks->isEmpty()) {
             return redirect()->back()->with('error', 'Belum ada pihak yang melakukan absensi hadir untuk jadwal ini.');

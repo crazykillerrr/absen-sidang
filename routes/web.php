@@ -71,6 +71,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Integrasi SIPP
     Route::get('integrasi-sipp', [\App\Http\Controllers\Admin\SippController::class, 'index'])->name('integrasi-sipp.index');
     Route::post('integrasi-sipp/sync', [\App\Http\Controllers\Admin\SippController::class, 'syncNow'])->name('integrasi-sipp.sync');
+
+    // Daftar Hadir Hari Ini
+    Route::get('daftar-hadir-hari-ini', [LaporanController::class, 'hariIni'])->name('daftar-hadir-hari-ini');
 });
 
 // Profile Admin

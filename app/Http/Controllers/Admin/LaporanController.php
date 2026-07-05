@@ -131,4 +131,34 @@ class LaporanController extends Controller
             'pagination_links' => (string) $kehadirans->links(),
         ]);
     }
+
+    /**
+     * Tampilan daftar hadir hari ini dengan urutan nomor perkara untuk display monitor.
+     */
+    public function hariIni(Request $request)
+    {
+        $today = \Carbon\Carbon::today();
+
+        $kehadirans = Kehadiran::select('kehadiran.*')
+            ->join('pihak_sidang', 'kehadiran.pihak_sidang_id', '=', 'pihak_sidang.id')
+            ->join('jadwal_sidang', 'pihak_sidang.jadwal_sidang_id', '=', 'jadwal_sidang.id')
+            ->join('perkara', 'jadwal_sidang.perkara_id', '=', 'perkara.id')
+            ->whereDate('kehadiran.waktu_hadir', $today)
+            ->whereNull('pihak_sidang.deleted_at')
+            ->whereNull('jadwal_sidang.deleted_at')
+            ->whereNull('perkara.deleted_at')
+            ->with([
+                'pihakSidang.jadwalSidang.perkara',
+                'pihakSidang.jadwalSidang.ruangSidang'
+            ])
+            ->orderBy('perkara.nomor_perkara', 'asc')
+            ->orderBy('kehadiran.waktu_hadir', 'asc')
+            ->get();
+
+        if ($request->ajax()) {
+            return view('admin.laporan.hari_ini_list', compact('kehadirans'));
+        }
+
+        return view('admin.laporan.hari_ini', compact('kehadirans'));
+    }
 }
