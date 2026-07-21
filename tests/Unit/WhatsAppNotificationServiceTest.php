@@ -11,12 +11,14 @@ class WhatsAppNotificationServiceTest extends TestCase
     public function test_send_notification_successfully(): void
     {
         Http::fake([
-            'api.twilio.com/*' => Http::response(['sid' => 'SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'], 201)
+            'api.fonnte.com/*' => Http::response([
+                'status' => true,
+                'message' => 'success'
+            ], 200)
         ]);
 
-        config(['services.twilio.sid' => 'test_sid']);
-        config(['services.twilio.token' => 'test_token']);
-        config(['services.twilio.from' => 'whatsapp:+14155238886']);
+        config(['services.fonnte.token' => 'test_fonnte_token']);
+        config(['services.fonnte.url' => 'https://api.fonnte.com/send']);
 
         $service = new WhatsAppNotificationService();
         $result = $service->sendNotification('081234567890', 'Test Message');
@@ -24,10 +26,10 @@ class WhatsAppNotificationServiceTest extends TestCase
         $this->assertTrue($result);
 
         Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.twilio.com/2010-04-01/Accounts/test_sid/Messages.json' &&
-                $request['To'] === 'whatsapp:+6281234567890' &&
-                $request['From'] === 'whatsapp:+14155238886' &&
-                str_contains($request['Body'], 'Test Message');
+            return $request->url() === 'https://api.fonnte.com/send' &&
+                $request->hasHeader('Authorization', 'test_fonnte_token') &&
+                $request['target'] === '6281234567890' &&
+                str_contains($request['message'], 'Test Message');
         });
     }
 }

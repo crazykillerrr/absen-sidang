@@ -28,6 +28,15 @@ class AbsensiController extends Controller
     public function index(Request $request)
     {
         $qrcode = $request->input('qrcode');
+
+        // Jika ada qrcode baru di URL, simpan ke session
+        if (!empty($qrcode)) {
+            session(['scanned_qrcode' => $qrcode]);
+        } else {
+            // Jika tidak ada di URL, ambil dari session jika ada
+            $qrcode = session('scanned_qrcode');
+        }
+
         $lokasi = null;
 
         // Validasi lokasi QR Code jika parameter qrcode diisi
@@ -35,6 +44,10 @@ class AbsensiController extends Controller
             $qrRecord = QrCode::where('kode', $qrcode)->first();
             if ($qrRecord) {
                 $lokasi = $qrRecord->lokasi;
+            } else {
+                // Jika tidak valid, hapus session agar konsisten
+                session()->forget('scanned_qrcode');
+                $qrcode = null;
             }
         }
 

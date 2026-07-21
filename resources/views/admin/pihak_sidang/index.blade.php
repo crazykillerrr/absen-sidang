@@ -92,10 +92,10 @@
                 <div class="col-6">
                     <div class="p-2 border rounded-3 bg-white">
                         <div class="mb-2">
-                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(1)->color(11, 42, 73)->generate(url('/absensi?qrcode=QR-SATPAM')) !!}
+                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(1)->color(11, 42, 73)->generate(url('/?qrcode=QR-SATPAM')) !!}
                         </div>
                         <span class="fw-bold text-dark small">Pos Satpam</span>
-                        <a href="{{ url('/absensi?qrcode=QR-SATPAM') }}" target="_blank" class="d-block small text-decoration-none mt-1">Uji Scan</a>
+                        <a href="{{ url('/?qrcode=QR-SATPAM') }}" target="_blank" class="d-block small text-decoration-none mt-1">Uji Scan</a>
                     </div>
                 </div>
                 
@@ -103,10 +103,10 @@
                 <div class="col-6">
                     <div class="p-2 border rounded-3 bg-white">
                         <div class="mb-2">
-                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(1)->color(11, 42, 73)->generate(url('/absensi?qrcode=QR-TUNGGU')) !!}
+                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->margin(1)->color(11, 42, 73)->generate(url('/?qrcode=QR-TUNGGU')) !!}
                         </div>
                         <span class="fw-bold text-dark small">Ruang Tunggu</span>
-                        <a href="{{ url('/absensi?qrcode=QR-TUNGGU') }}" target="_blank" class="d-block small text-decoration-none mt-1">Uji Scan</a>
+                        <a href="{{ url('/?qrcode=QR-TUNGGU') }}" target="_blank" class="d-block small text-decoration-none mt-1">Uji Scan</a>
                     </div>
                 </div>
             </div>

@@ -262,8 +262,15 @@
                             <h3 class="fw-bold fs-3 mb-2 text-white">Absensi Mandiri Sidang</h3>
                             <p class="text-white-50 mb-4 px-md-3">Silakan lakukan absensi persidangan secara mandiri dengan mengklik tombol di bawah untuk mengisi formulir kehadiran.</p>
                             
+                            @if(!empty($lokasi))
+                                <div class="d-inline-flex align-items-center gap-2 bg-success bg-opacity-25 border border-success border-opacity-50 text-white rounded-pill px-3 py-1 mb-4 small align-self-center">
+                                    <i class="bi bi-geo-alt-fill text-warning"></i>
+                                    <span>Scan Berhasil! Lokasi terdeteksi: <strong>{{ $lokasi }}</strong></span>
+                                </div>
+                            @endif
+
                             <div class="col-md-8 mx-auto">
-                                <a href="{{ route('public.absensi') }}" class="btn btn-portal-primary w-100 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                <a href="{{ route('public.absensi', ['qrcode' => $qrcode ?? '']) }}" class="btn btn-portal-primary w-100 shadow-sm d-flex align-items-center justify-content-center gap-2">
                                     <span>Mulai Absen Sekarang</span>
                                 </a>
                             </div>

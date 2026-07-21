@@ -7,15 +7,13 @@ use Illuminate\Support\Facades\Http;
 
 class WhatsAppNotificationService
 {
-    protected $sid;
     protected $token;
-    protected $from;
+    protected $url;
 
     public function __construct()
     {
-        $this->sid = config('services.twilio.sid');
-        $this->token = config('services.twilio.token');
-        $this->from = config('services.twilio.from');
+        $this->token = config('services.fonnte.token');
+        $this->url = config('services.fonnte.url');
     }
 
     /**
@@ -27,8 +25,8 @@ class WhatsAppNotificationService
      */
     public function sendNotification(string $target, string $message): bool
     {
-        if (empty($this->sid) || empty($this->token) || empty($this->from)) {
-            Log::warning("WhatsAppNotificationService: Kredensial Twilio belum dikonfigurasi lengkap di .env.");
+        if (empty($this->token)) {
+            Log::warning("WhatsAppNotificationService: Kredensial Fonnte belum dikonfigurasi lengkap di .env.");
             return false;
         }
 
@@ -37,7 +35,7 @@ class WhatsAppNotificationService
 
         try {
             $targets = explode(',', $target);
-            $success = true;
+            $formattedTargets = [];
 
             foreach ($targets as $t) {
                 $cleanTarget = trim($t);
@@ -49,7 +47,6 @@ class WhatsAppNotificationService
                 $numericTarget = preg_replace('/[^0-9]/', '', $cleanTarget);
                 if (empty($numericTarget)) {
                     Log::warning("WhatsAppNotificationService: Nomor target '{$cleanTarget}' tidak valid.");
-                    $success = false;
                     continue;
                 }
 
@@ -58,27 +55,33 @@ class WhatsAppNotificationService
                     $numericTarget = '62' . substr($numericTarget, 1);
                 }
                 
-                $to = 'whatsapp:+' . $numericTarget;
-
-                Log::info("WhatsAppNotificationService: Mengirim WhatsApp menggunakan Twilio HTTP Client ke: {$to}");
-
-                $response = Http::withBasicAuth($this->sid, $this->token)
-                    ->asForm()
-                    ->post("https://api.twilio.com/2010-04-01/Accounts/{$this->sid}/Messages.json", [
-                        'To' => $to,
-                        'From' => $this->from,
-                        'Body' => $formattedMessage,
-                    ]);
-
-                if ($response->successful()) {
-                    Log::info("WhatsAppNotificationService: Notifikasi WhatsApp berhasil dikirim ke: {$cleanTarget}");
-                } else {
-                    Log::warning("WhatsAppNotificationService: Notifikasi WhatsApp gagal dikirim ke: {$cleanTarget}. Response: " . $response->body());
-                    $success = false;
-                }
+                $formattedTargets[] = $numericTarget;
             }
 
-            return $success;
+            if (empty($formattedTargets)) {
+                Log::warning("WhatsAppNotificationService: Tidak ada nomor target yang valid.");
+                return false;
+            }
+
+            $targetString = implode(',', $formattedTargets);
+
+            Log::info("WhatsAppNotificationService: Mengirim WhatsApp menggunakan Fonnte HTTP Client ke: {$targetString}");
+
+            $response = Http::withHeaders([
+                'Authorization' => $this->token,
+            ])->post($this->url ?: 'https://api.fonnte.com/send', [
+                'target' => $targetString,
+                'message' => $formattedMessage,
+            ]);
+
+            $status = $response->json('status');
+            if ($response->successful() && ($status === true || $status === 'true')) {
+                Log::info("WhatsAppNotificationService: Notifikasi WhatsApp berhasil dikirim ke: {$targetString}");
+                return true;
+            } else {
+                Log::warning("WhatsAppNotificationService: Notifikasi WhatsApp gagal dikirim ke: {$targetString}. Response: " . $response->body());
+                return false;
+            }
         } catch (\Exception $e) {
             Log::error("WhatsAppNotificationService: Exception saat mengirim WhatsApp ke {$target}. Error: " . $e->getMessage());
             return false;

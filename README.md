@@ -96,7 +96,7 @@ Untuk menjaga keamanan pada lingkungan hosting:
 
 ## 📅 Alur Uji Coba Simulasi Kehadiran
 
-1. **Akses Form Absensi**: Buka `https://[domain-anda]/` lalu klik **Mulai Absen Sekarang**, atau simulasikan check-in lokasi QR dengan mengakses URL `https://[domain-anda]/absensi?qrcode=QR-SATPAM` (Lokasi: Pos Satpam).
+1. **Akses Form Absensi**: Buka `https://[domain-anda]/` lalu klik **Mulai Absen Sekarang**, atau simulasikan check-in lokasi QR dengan mengakses URL `https://[domain-anda]/?qrcode=QR-SATPAM` (Lokasi: Pos Satpam).
 2. **Pilih Perkara & Konfirmasi Pihak**:
    * Pilih nomor perkara persidangan yang dijadwalkan hari ini.
    * Pilih nama pihak dari daftar yang wajib hadir.

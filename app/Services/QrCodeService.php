@@ -52,7 +52,7 @@ class QrCodeService
      */
     public function generateQrCodeSvg(string $kode): string
     {
-        $url = url('/absensi?qrcode=' . urlencode($kode));
+        $url = url('/?qrcode=' . urlencode($kode));
         
         return SimpleQrCode::size(250)
             ->margin(1)

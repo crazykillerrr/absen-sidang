@@ -37,5 +37,10 @@ return [
         'from' => env('TWILIO_WHATSAPP_FROM'),
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+        'url' => env('FONNTE_URL', 'https://api.fonnte.com/send'),
+    ],
+
 ];
 

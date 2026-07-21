@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -33,7 +34,10 @@ class PengingatSidangMail extends Mailable
     {
         $nomorPerkara = $this->perkara?->nomor_perkara ?? '-';
         return new Envelope(
-            subject: "[PENGINGAT SIDANG PTUN] Jadwal Sidang Esok Hari - Perkara No. {$nomorPerkara}",
+            subject: "Pengingat Jadwal Sidang PTUN - Perkara No. {$nomorPerkara}",
+            replyTo: [
+                new Address(config('mail.from.address'), config('mail.from.name')),
+            ],
         );
     }
 

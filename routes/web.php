@@ -19,8 +19,29 @@ use App\Http\Controllers\Admin\LaporanController;
 
 // Gateway Portal PTUN
 Route::get('/', function () {
-    return view('portal');
-})->middleware('guest')->name('portal');
+    $qrcode = request()->query('qrcode');
+    
+    // Jika ada qrcode baru di URL, simpan ke session
+    if (!empty($qrcode)) {
+        session(['scanned_qrcode' => $qrcode]);
+    } else {
+        // Jika tidak ada di URL, ambil dari session jika ada
+        $qrcode = session('scanned_qrcode');
+    }
+    
+    $lokasi = null;
+    if (!empty($qrcode)) {
+        $qrRecord = \App\Models\QrCode::where('kode', $qrcode)->first();
+        if ($qrRecord) {
+            $lokasi = $qrRecord->lokasi;
+        } else {
+            // Jika kode tidak valid, bersihkan session agar konsisten
+            session()->forget('scanned_qrcode');
+            $qrcode = null;
+        }
+    }
+    return view('portal', compact('lokasi', 'qrcode'));
+})->name('portal');
 
 // Rute Absensi Publik (Tanpa Login)
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('public.absensi');
