@@ -27,10 +27,10 @@
     </div>
 @endif
 
-<div class="row g-4 mb-4">
+<div class="row g-3 g-md-4 mb-4">
     <!-- Stat 1: Total Perkara -->
-    <div class="col-md-6 col-lg-3 col-12">
-        <div class="card premium-card border-0 p-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card premium-card border-0 p-3 p-md-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="premium-card-title mb-1">Total Perkara</h6>
@@ -44,8 +44,8 @@
     </div>
 
     <!-- Stat 2: Sidang Hari Ini -->
-    <div class="col-md-6 col-lg-3 col-12">
-        <div class="card premium-card border-0 p-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card premium-card border-0 p-3 p-md-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="premium-card-title mb-1">Sidang Hari Ini</h6>
@@ -59,8 +59,8 @@
     </div>
 
     <!-- Stat 3: Kehadiran Hari Ini -->
-    <div class="col-md-6 col-lg-3 col-12">
-        <div class="card premium-card border-0 p-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card premium-card border-0 p-3 p-md-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="premium-card-title mb-1">Kehadiran Hari Ini</h6>
@@ -74,8 +74,8 @@
     </div>
 
     <!-- Stat 4: Sidang Berjalan -->
-    <div class="col-md-6 col-lg-3 col-12">
-        <div class="card premium-card border-0 p-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card premium-card border-0 p-3 p-md-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <h6 class="premium-card-title mb-1">Sidang Berjalan</h6>
@@ -110,7 +110,7 @@
 
 <!-- Tabel Sidang Hari Ini -->
 <div class="card border-0 shadow-sm rounded-4" style="background-color: var(--bg-secondary);">
-    <div class="card-header border-0 bg-transparent p-4 d-flex align-items-center justify-content-between">
+    <div class="card-header border-0 bg-transparent p-3 p-md-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2">
         <h5 class="fw-bold mb-0" style="color: var(--text-primary);">Daftar Persidangan Hari Ini</h5>
         <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small">
             {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}
@@ -121,12 +121,12 @@
             <table class="table table-hover table-custom mb-0 border-0">
                 <thead>
                     <tr>
-                        <th class="border-0">Waktu</th>
-                        <th class="border-0">Nomor Perkara</th>
-                        <th class="border-0">Agenda</th>
-                        <th class="border-0">Ruang Sidang</th>
-                        <th class="border-0">Kehadiran Pihak</th>
-                        <th class="border-0 text-center">Aksi</th>
+                        <th class="border-0 text-nowrap">Waktu</th>
+                        <th class="border-0 text-nowrap">Nomor Perkara</th>
+                        <th class="border-0 text-nowrap">Agenda</th>
+                        <th class="border-0 text-nowrap">Ruang Sidang</th>
+                        <th class="border-0 text-nowrap">Kehadiran Pihak</th>
+                        <th class="border-0 text-center text-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="dashboard-schedules-body">
@@ -176,7 +176,7 @@
 
 <!-- Tabel Kehadiran Terbaru -->
 <div class="card border-0 shadow-sm rounded-4 mt-4" style="background-color: var(--bg-secondary);">
-    <div class="card-header border-0 bg-transparent p-4 d-flex align-items-center justify-content-between">
+    <div class="card-header border-0 bg-transparent p-3 p-md-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2">
         <h5 class="fw-bold mb-0" style="color: var(--text-primary);">Daftar Kehadiran Terbaru</h5>
         <a href="{{ route('admin.laporan.index') }}" class="btn btn-sm btn-outline-secondary px-3 rounded-pill small" style="border-color: var(--border-color); color: var(--text-secondary);">
             <i class="bi bi-file-earmark-bar-graph me-1"></i>Lihat Semua Laporan
@@ -361,8 +361,8 @@
             .catch(err => console.error('Error fetching dashboard real-time data:', err));
     }
 
-    // Poll every 3 seconds
-    setInterval(fetchDashboardData, 3000);
+    // Poll every 2 seconds for real-time updates
+    setInterval(fetchDashboardData, 2000);
     fetchDashboardData(); // Also run immediately on load
 });
 </script>

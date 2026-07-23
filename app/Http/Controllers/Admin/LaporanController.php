@@ -156,7 +156,11 @@ class LaporanController extends Controller
             ->get();
 
         if ($request->ajax()) {
-            return view('admin.laporan.hari_ini_list', compact('kehadirans'));
+            return response()->json([
+                'totalPihakHadir' => $kehadirans->count(),
+                'totalJumlahPerkara' => $kehadirans->unique('pihakSidang.jadwalSidang.perkara_id')->count(),
+                'html' => view('admin.laporan.hari_ini_list', compact('kehadirans'))->render()
+            ]);
         }
 
         return view('admin.laporan.hari_ini', compact('kehadirans'));

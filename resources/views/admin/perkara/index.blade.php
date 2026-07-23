@@ -3,27 +3,27 @@
 @section('title', 'Kelola Perkara')
 
 @section('content')
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4">
     <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Daftar Perkara PTUN</h4>
-    <a href="{{ route('admin.perkara.create') }}" class="btn btn-primary rounded-pill px-4">
+    <a href="{{ route('admin.perkara.create') }}" class="btn btn-primary rounded-pill px-4 text-nowrap">
         <i class="bi bi-plus-lg me-2"></i>Tambah Perkara
     </a>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4" style="background-color: var(--bg-secondary);">
-    <div class="card-header border-0 bg-transparent p-4">
-        <form method="GET" action="{{ route('admin.perkara.index') }}" class="row g-3">
-            <div class="col-md-4">
+    <div class="card-header border-0 bg-transparent p-3 p-md-4">
+        <form method="GET" action="{{ route('admin.perkara.index') }}" class="row g-2 g-md-3">
+            <div class="col-12 col-md-6 col-lg-5">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control bg-light border-start-0" placeholder="Cari nomor perkara, tahun, keterangan..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <button type="submit" class="btn btn-secondary w-100">Filter</button>
             </div>
             @if(request('search'))
-                <div class="col-md-2">
+                <div class="col-6 col-md-3 col-lg-2">
                     <a href="{{ route('admin.perkara.index') }}" class="btn btn-outline-secondary w-100">Reset</a>
                 </div>
             @endif

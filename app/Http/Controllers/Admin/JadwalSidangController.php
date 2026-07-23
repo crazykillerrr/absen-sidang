@@ -202,4 +202,25 @@ class JadwalSidangController extends Controller
 
         return redirect()->back()->with('success', "Panggilan berhasil dikirim ke para pihak. WhatsApp terkirim: {$waSuccess}, Email terkirim: {$emailSuccess}.");
     }
+
+    public function updateStatus(Request $request, int $id)
+    {
+        $request->validate([
+            'status_sidang' => 'required|string|in:belum_dimulai,berlangsung,selesai'
+        ]);
+
+        $jadwal = \App\Models\JadwalSidang::findOrFail($id);
+        $jadwal->status_sidang = $request->input('status_sidang');
+        $jadwal->save();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'status_sidang' => $jadwal->status_sidang,
+                'message' => 'Status sidang berhasil diperbarui.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Status sidang berhasil diperbarui.');
+    }
 }

@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // CRUD Jadwal Sidang
     Route::resource('jadwal-sidang', JadwalSidangController::class);
     Route::post('jadwal-sidang/{jadwal_sidang}/panggil', [JadwalSidangController::class, 'panggil'])->name('jadwal-sidang.panggil');
+    Route::post('jadwal-sidang/{jadwal_sidang}/status', [JadwalSidangController::class, 'updateStatus'])->name('jadwal-sidang.update-status');
 
     // CRUD Pihak Berperkara per Jadwal Sidang
     Route::get('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'index'])->name('pihak-sidang.index');

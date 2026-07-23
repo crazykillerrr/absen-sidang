@@ -22,6 +22,7 @@ class JadwalSidang extends Model
         'jam_sidang',
         'jenis_sidang',
         'sumber_data',
+        'status_sidang',
         'terakhir_sinkron',
         'jenis_perkara',
         'pihak',

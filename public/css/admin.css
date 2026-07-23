@@ -357,18 +357,109 @@ body.dark-mode .form-control-custom {
     text-align: center;
 }
 
-/* Mobile responsive sidebar and gateway overrides */
-@media(max-width: 768px) {
-    #sidebar {
-        margin-left: -260px;
+/* Sidebar Overlay for Mobile Off-Canvas */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Touch-friendly Scrollable Tables */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+
+/* Mobile responsive sidebar, table, & admin panel overrides */
+@media (max-width: 991.98px) {
+    #wrapper {
+        overflow-x: hidden;
     }
+
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 1050;
+        width: 270px;
+        min-width: 270px;
+        max-width: 270px;
+        margin-left: -270px;
+        transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+    }
+
     #sidebar.active {
         margin-left: 0;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
     }
+
+    #content {
+        width: 100%;
+        min-width: 100%;
+    }
+
     .navbar-custom {
-        padding: 15px;
+        padding: 10px 16px;
     }
-    
+
+    .admin-content-container {
+        padding: 16px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .premium-card {
+        padding: 16px !important;
+    }
+
+    .premium-card-title {
+        font-size: 0.78rem;
+    }
+
+    .premium-card-value {
+        font-size: 1.45rem;
+    }
+
+    .icon-box {
+        width: 42px;
+        height: 42px;
+        font-size: 1.15rem;
+        border-radius: 10px;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        padding: 10px 12px;
+        font-size: 0.84rem;
+    }
+
+    .card-header, 
+    .card-body, 
+    .card-footer {
+        padding: 16px !important;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+    }
+
     /* Responsive Footer */
     .footer-text {
         font-size: 0.74rem;

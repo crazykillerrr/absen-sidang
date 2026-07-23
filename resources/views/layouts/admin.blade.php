@@ -35,15 +35,18 @@
 </head>
 <body>
 
+    <!-- Overlay Backdrop for Mobile Sidebar -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
     <div id="wrapper">
         <!-- Sidebar Navigation -->
         <nav id="sidebar">
             <div class="sidebar-header d-flex align-items-center justify-content-between">
                 <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
-                    <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
+                    <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 38px; width: auto; object-fit: contain;">
                     <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">SI-OCID</span>
                 </a>
-                <button type="button" id="sidebarCollapseMobile" class="btn d-md-none border-0 text-secondary">
+                <button type="button" id="sidebarCollapseMobile" class="btn d-lg-none border-0 text-white p-1" title="Tutup Menu">
                     <i class="bi bi-x-lg fs-4"></i>
                 </button>
             </div>
@@ -115,15 +118,23 @@
         <!-- Main Content Wrapper -->
         <div id="content">
             <!-- Top Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+            <nav class="navbar navbar-expand-lg navbar-light navbar-custom sticky-top">
                 <div class="container-fluid p-0">
-                    <!-- Toggle Sidebar Button -->
-                    <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary border-0 rounded-circle p-2">
-                        <i class="bi bi-list fs-4"></i>
-                    </button>
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Toggle Sidebar Button -->
+                        <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary border-0 rounded-circle p-2" title="Buka/Tutup Menu">
+                            <i class="bi bi-list fs-4"></i>
+                        </button>
+                        
+                        <!-- Mobile Brand Logo & Name -->
+                        <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none d-lg-none ms-1">
+                            <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 32px; width: auto;">
+                            <span class="fw-bold fs-6 text-uppercase tracking-wider" style="color: var(--text-primary);">SI-OCID</span>
+                        </a>
+                    </div>
 
                     <!-- Navbar Actions -->
-                    <div class="d-flex align-items-center gap-3 ms-auto">
+                    <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
                         <!-- Dark Mode Toggle Button -->
                         <button type="button" id="darkModeToggle" class="btn btn-outline-secondary border-0 rounded-circle p-2" title="Ganti Tema">
                             <i class="bi bi-moon-stars fs-5" id="themeIcon"></i>
@@ -134,7 +145,7 @@
                         <!-- User Profile Dropdown -->
                         <div class="dropdown">
                             <a href="#" class="d-flex align-items-center gap-2 text-decoration-none text-dark dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold" style="width: 38px; height: 38px;">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem;">
                                     {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                                 </span>
                                 <span class="d-none d-md-inline fw-medium" style="color: var(--text-primary);">{{ Auth::user()->name ?? 'Administrator' }}</span>
@@ -166,7 +177,7 @@
             </nav>
 
             <!-- Main Content Container -->
-            <div class="container-fluid p-4">
+            <div class="container-fluid admin-content-container p-3 p-md-4">
                 @yield('content')
             </div>
         </div>
@@ -180,21 +191,48 @@
     
     <!-- Custom Sidebar & Dark Mode Script -->
     <script>
-        // Sidebar Toggles
+        // Sidebar & Overlay Elements
         const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
         const sidebarCollapse = document.getElementById('sidebarCollapse');
         const sidebarCollapseMobile = document.getElementById('sidebarCollapseMobile');
 
-        if (sidebarCollapse) {
-            sidebarCollapse.addEventListener('click', () => {
+        function toggleSidebar() {
+            if (sidebar) {
                 sidebar.classList.toggle('active');
-            });
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.toggle('show');
+                }
+            }
+        }
+
+        function closeSidebar() {
+            if (sidebar) {
+                sidebar.classList.remove('active');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.remove('show');
+                }
+            }
+        }
+
+        if (sidebarCollapse) {
+            sidebarCollapse.addEventListener('click', toggleSidebar);
         }
         if (sidebarCollapseMobile) {
-            sidebarCollapseMobile.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-            });
+            sidebarCollapseMobile.addEventListener('click', closeSidebar);
         }
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // Auto-close sidebar on mobile when navigating links
+        document.querySelectorAll('#sidebar ul.components a:not([data-bs-toggle])').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) {
+                    closeSidebar();
+                }
+            });
+        });
 
         // Dark Mode Logic
         const darkModeToggle = document.getElementById('darkModeToggle');

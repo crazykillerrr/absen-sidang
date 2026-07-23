@@ -36,7 +36,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <span class="text-secondary small d-block mb-1">Total Pihak Hadir</span>
-                            <span class="fs-3 fw-bold text-dark">{{ $kehadirans->count() }}</span>
+                            <span id="stat-total-pihak" class="fs-3 fw-bold text-dark">{{ $kehadirans->count() }}</span>
                         </div>
                         <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle">
                             <i class="bi bi-people fs-4"></i>
@@ -49,7 +49,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <span class="text-secondary small d-block mb-1">Jumlah Perkara</span>
-                            <span class="fs-3 fw-bold text-dark">{{ $kehadirans->unique('pihakSidang.jadwalSidang.perkara_id')->count() }}</span>
+                            <span id="stat-jumlah-perkara" class="fs-3 fw-bold text-dark">{{ $kehadirans->unique('pihakSidang.jadwalSidang.perkara_id')->count() }}</span>
                         </div>
                         <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle">
                             <i class="bi bi-folder2-open fs-4"></i>
@@ -217,10 +217,13 @@
         // Jalankan inisialisasi scroll di awal
         setTimeout(initializeScrolling, 500);
 
-        // --- 4. AJAX Polling (Mengambil data terbaru tanpa force-close fullscreen) ---
+        // --- 4. AJAX Realtime Polling (2 Detik) ---
+        let lastHtmlContent = '';
+
         function fetchLatestData() {
             fetch(window.location.href, {
                 headers: {
+                    'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
@@ -229,28 +232,117 @@
                     window.location.reload();
                     return null;
                 }
-                return response.text();
+                return response.json();
             })
-            .then(html => {
-                if (!html) return;
+            .then(data => {
+                if (!data) return;
                 
+                // Update statistik ringkas
+                const statTotal = document.getElementById('stat-total-pihak');
+                const statPerkara = document.getElementById('stat-jumlah-perkara');
+                
+                if (statTotal && statTotal.innerText !== String(data.totalPihakHadir)) {
+                    statTotal.innerText = data.totalPihakHadir;
+                }
+                
+                if (statPerkara && statPerkara.innerText !== String(data.totalJumlahPerkara)) {
+                    statPerkara.innerText = data.totalJumlahPerkara;
+                }
+                
+                // Update daftar kehadiran hanya jika ada perubahan konten HTML
                 const contentArea = document.getElementById('attendance-scroll-content');
-                if (contentArea) {
-                    contentArea.innerHTML = html;
+                if (contentArea && data.html && lastHtmlContent !== data.html) {
+                    lastHtmlContent = data.html;
+                    contentArea.innerHTML = data.html;
                     setTimeout(initializeScrolling, 100);
                 }
             })
             .catch(err => console.error("Gagal memperbarui data absensi: ", err));
         }
 
-        // Jalankan polling setiap 15 detik
-        setInterval(fetchLatestData, 15000);
+        // Fast Polling secara realtime setiap 2 detik
+        setInterval(fetchLatestData, 2000);
+        window.fetchLatestData = fetchLatestData;
     });
+
+    // Global function to update status sidang via AJAX
+    function changeStatusSidang(jadwalId, newStatus) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        fetch(`{{ url('admin/jadwal-sidang') }}/${jadwalId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ status_sidang: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && typeof window.fetchLatestData === 'function') {
+                window.fetchLatestData();
+            }
+        })
+        .catch(err => console.error('Error updating status sidang:', err));
+    }
 </script>
 @endsection
 
-<!-- Custom CSS untuk Animasi & Fullscreen Mode -->
+<!-- Custom CSS untuk Animasi Status Sidang & Fullscreen Mode -->
 <style>
+    /* Flashing / Blinking Animation for Live Sidang (Red) */
+    @keyframes blink-red-anim {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.98); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    .blink-red-badge {
+        animation: blink-red-anim 1.2s infinite ease-in-out;
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.75) !important;
+    }
+
+    .blink-red-text {
+        animation: blink-red-anim 1.8s infinite ease-in-out;
+    }
+
+    .pulse-dot-red-blink {
+        width: 8px;
+        height: 8px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
+        animation: pulse-dot-white 1s infinite;
+    }
+
+    @keyframes pulse-dot-white {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+
+    .border-danger-live {
+        border: 2.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2) !important;
+    }
+
+    .border-success-done {
+        border: 2.5px solid #10b981 !important;
+        background-color: #f0fdf4 !important;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    .pulse-red-btn {
+        transition: all 0.2s ease;
+    }
+    .pulse-red-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+    }
     /* Base element design (Normal mode) */
     #attendance-scroll-container {
         height: calc(100vh - 360px);
