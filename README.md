@@ -1,4 +1,4 @@
-# ⚖️ SIPEKA / SI-ABDI — Sistem Absensi & Monitoring Kehadiran Pihak Persidangan Berbasis Web
+#  SIPEKA — Sistem Absensi & Monitoring Kehadiran Pihak Persidangan Berbasis Web
 ### Pengadilan Tata Usaha Negara (PTUN) Bandar Lampung
 
 ---
@@ -13,7 +13,7 @@
 
 ---
 
-## 📄 Judul Resmi Kerja Praktik
+##  Judul Resmi Kerja Praktik
 
 > **"Pengembangan Sistem Absensi dan Monitoring Kehadiran Pihak Berperkara pada Persidangan PTUN Berbasis Web dengan Integrasi Jadwal Sidang SIPP"**
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 📌 Latar Belakang & Perumusan Masalah
+##  Latar Belakang & Perumusan Masalah
 
 Pada pelaksanaan persidangan di **Pengadilan Tata Usaha Negara (PTUN) Bandar Lampung**, ditemukan permasalahan di mana beberapa pihak berperkara (Penggugat, Tergugat, Saksi, Ahli, maupun Kuasa Hukum) yang telah melakukan absensi kedatangan **sering meninggalkan ruang tunggu** sebelum persidangan dimulai. Kondisi tersebut mengharuskan petugas pengadilan kembali memanggil atau mencari pihak yang bersangkutan secara manual di area gedung pengadilan, sehingga pelaksanaan persidangan berpotensi mengalami keterlambatan.
 
@@ -32,7 +32,7 @@ Berdasarkan permasalahan tersebut, dikembangkan sistem berbasis web bernama **SI
 
 ---
 
-## 🎯 Tujuan & Manfaat Sistem
+##  Tujuan & Manfaat Sistem
 
 ### A. Tujuan Pengembangan
 1. **Digitalisasi Presensi Mandiri**: Menyediakan media absensi mandiri berbasis QR Code yang cepat, aman, dan tanpa prosedur login yang rumit bagi masyarakat.
@@ -47,7 +47,7 @@ Berdasarkan permasalahan tersebut, dikembangkan sistem berbasis web bernama **SI
 
 ---
 
-## 🚀 Fitur-Fitur Utama Sistem
+##  Fitur-Fitur Utama Sistem
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -62,13 +62,13 @@ Berdasarkan permasalahan tersebut, dikembangkan sistem berbasis web bernama **SI
 +------------------------------------+----------------------------------------------+
 ```
 
-### 1. 📱 Portal Absensi Mandiri QR Code (Zero Login)
+### 1.  Portal Absensi Mandiri QR Code (Zero Login)
 * **Scan QR Code Multi-Lokasi**: Pihak berperkara cukup memindai QR Code yang dipasang pada lokasi strategis (Pos Satpam, PTSP, Ruang Tunggu).
 * **Zero Login & Zero Password**: Publik tidak memerlukan pendaftaran akun atau autentikasi password.
 * **Deteksi Lokasi & Prefill Otomatis**: Form absensi mengenali titik lokasi QR Code dan menyaring daftar jadwal persidangan hari itu secara dinamis.
 * **Bukti Check-In Digital**: Menerbitkan tanda centang hijau digital beserta rincian nomor perkara, jam presisi check-in, dan nama ruang sidang.
 
-### 2. 🖥️ Dashboard Monitoring Real-Time & Layar TV Display
+### 2.  Dashboard Monitoring Real-Time & Layar TV Display
 * **Auto-Polling Real-Time**: Pembaruan data kehadiran secara otomatis setiap 2 detik tanpa perlu me-refresh peramban.
 * **Indikator Visual Status Sidang**:
   * 🟢 **Warna Hijau (`SIDANG BERLANGSUNG`)**: Diaktifkan saat persidangan dibuka oleh Majelis Hakim. Tampilan kartu menyala hijau dengan indikator berkedip.
@@ -78,29 +78,29 @@ Berdasarkan permasalahan tersebut, dikembangkan sistem berbasis web bernama **SI
   * **Hover Auto-Pause**: Perguliran scroll berhenti otomatis saat kursor mouse diarahkan ke kartu perkara untuk menjaga akurasi klik tombol aksi.
   * **Mode Layar Penuh (Fullscreen)**: Memaksimalkan tampilan TV monitor dengan menyembunyikan elemen navigasi.
 
-### 3. 💬 Otomatisasi Notifikasi & Panggilan Sidang Hari-H (WhatsApp & Email)
+### 3.  Otomatisasi Notifikasi & Panggilan Sidang Hari-H (WhatsApp & Email)
 * **Panggilan Persidangan Hari-H (Real-Time)**: Dikirimkan pada hari persidangan ketika petugas admin memicu tombol *"Panggil Pihak"*. Notifikasi terkirim secara serentak via **WhatsApp (Twilio API Gateway)** dan **Email** ke seluruh pihak terdaftar pada perkara tersebut.
 * **Solusi Pihak Meninggalkan Ruang Tunggu**: Memastikan panggilan persidangan langsung diterima di HP & Email pihak meskipun mereka sedang berada di luar ruang tunggu gedung pengadilan.
 * **Pesan Anti-Gratifikasi**: Mengintegrasikan himbauan penolakan tip/gratifikasi khas institusi peradilan pada bagian footer pesan WhatsApp.
 
-### 4. 🔄 Integrasi & Sinkronisasi SIPP (`SippSyncService`)
+### 4.  Integrasi & Sinkronisasi SIPP (`SippSyncService`)
 * **Pencolokan Data Otomatis**: Menarik data Perkara, Jadwal Sidang, Ruang Sidang, Jenis Perkara, dan Pihak langsung dari portal SIPP PTUN Bandar Lampung.
 * **Rentang Hari Fleksibel**: Mampu melakukan *crawling* data persidangan dari **hari ini** hingga **10 hari ke depan**.
 * **Pencegahan Double Entry**: Mengeliminasi penginputan data secara manual oleh petugas admin.
 
-### 5. 📊 Modul Pelaporan & Ekspor Data
+### 5.  Modul Pelaporan & Ekspor Data
 * **Penapisan Fleksibel**: Menyaring data kehadiran berdasarkan Rentang Tanggal, Status Kehadiran, dan Ruang Sidang.
 * **Ekspor Multi-Format**:
   * **Cetak PDF**: Mengunduh berkas laporan cetak PDF berformat resmi via `DomPDF`.
   * **Ekspor Excel**: Mengunduh data mentah berformat `.xlsx` via `Laravel Excel`.
 
-### 6. 🛡️ Keamanan & Stealth Admin Entry
+### 6.  Keamanan & Stealth Admin Entry
 * **Stealth Admin Login**: Tombol login administrator disembunyikan secara khusus pada karakter hak cipta **`©`** di footer halaman publik (`/login`).
 * **Proteksi Data Seeder (`firstOrCreate`)**: Berkas `DatabaseSeeder.php` dikonfigurasi tanpa perintah `delete()`, sehingga aman dari penghapusan data riil saat seeder dijalankan.
 
 ---
 
-## 🛠️ Spesifikasi Teknologi (Tech Stack)
+##  Spesifikasi Teknologi (Tech Stack)
 
 | Lapisan | Teknologi / Dependensi | Fungsi / Peran |
 | :--- | :--- | :--- |
@@ -118,7 +118,7 @@ Berdasarkan permasalahan tersebut, dikembangkan sistem berbasis web bernama **SI
 
 ---
 
-## 🗄️ Skema Basis Data (Database Entities)
+##  Skema Basis Data (Database Entities)
 
 Sistem menggunakan database PostgreSQL dengan 9 entitas utama:
 
@@ -197,7 +197,7 @@ erDiagram
 
 ---
 
-## 📁 Struktur Direktori Proyek
+##  Struktur Direktori Proyek
 
 ```
 absen-sidang/
@@ -249,7 +249,7 @@ absen-sidang/
 
 ---
 
-## 🚀 Panduan Instalasi & Pengoperasian Lokal
+##  Panduan Instalasi & Pengoperasian Lokal
 
 ### 1. Prasyarat Sistem
 * PHP $\ge 8.2$ dengan ekstensi: `pdo_pgsql`, `mbstring`, `openssl`, `curl`, `xml`, `gd`
@@ -291,7 +291,7 @@ absen-sidang/
 
 ---
 
-## 📲 Panduan Aktivasi WhatsApp Sandbox (Twilio Testing)
+##  Panduan Aktivasi WhatsApp Sandbox (Twilio Testing)
 
 Jika Anda menggunakan akun Twilio gratis/trial untuk pengujian WhatsApp:
 
@@ -303,7 +303,7 @@ Jika Anda menggunakan akun Twilio gratis/trial untuk pengujian WhatsApp:
 
 ---
 
-## ⚡ Penggunaan Perintah Artisan (CLI Commands)
+##  Penggunaan Perintah Artisan (CLI Commands)
 
 | Perintah Artisan | Fungsi & Keterangan |
 | :--- | :--- |
@@ -314,7 +314,7 @@ Jika Anda menggunakan akun Twilio gratis/trial untuk pengujian WhatsApp:
 
 ---
 
-## 🧪 Pengujian Kualitas Kode (Automated Testing)
+##  Pengujian Kualitas Kode (Automated Testing)
 
 Proyek ini telah lulus pengujian otomatis sebanyak **34 Passed Tests (108 Assertions)** yang menguji fitur autentikasi, absensi real-time, Twilio WA gateway, dan crawler SIPP:
 
@@ -344,7 +344,7 @@ php artisan test
 
 ---
 
-## 🔐 Kredensial Akses Administrator Bawaan
+##  Kredensial Akses Administrator Bawaan
 
 * **Portal Publik (Masyarakat / Pihak Sidang)**: Akses via Scan QR Code (Tanpa Login).
 * **Panel Administrator (Backoffice)**:
@@ -354,7 +354,7 @@ php artisan test
 
 ---
 
-## 📄 Lisensi & Hak Cipta
+##  Lisensi & Hak Cipta
 
 Sistem ini dikembangkan dalam rangka pelaksanaan Kerja Praktik di **Pengadilan Tata Usaha Negara (PTUN) Bandar Lampung**.
 
