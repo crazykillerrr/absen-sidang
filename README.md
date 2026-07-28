@@ -344,13 +344,6 @@ php artisan test
 
 ---
 
-##  Kredensial Akses Administrator Bawaan
-
-* **Portal Publik (Masyarakat / Pihak Sidang)**: Akses via Scan QR Code (Tanpa Login).
-* **Panel Administrator (Backoffice)**:
-  * **Cara Akses**: Klik simbol hak cipta **`©`** pada footer halaman utama (`/login`).
-  * **Email**: `admin@ptun.go.id`
-  * **Password**: `password`
 
 ---
 
