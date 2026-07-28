@@ -471,4 +471,31 @@ body.dark-mode .form-control-custom {
         max-width: 90%;
         white-space: normal;
     }
+
+    /* Extra Mobile Responsive Helpers */
+    .badge {
+        font-size: 0.75rem;
+        white-space: normal;
+        text-align: left;
+    }
+
+    .badge-pill, .rounded-pill {
+        white-space: nowrap;
+    }
+
+    .table-responsive {
+        margin-bottom: 0;
+        border: 0;
+    }
+
+    .btn-group-responsive {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .btn-group-responsive .btn {
+        width: 100%;
+    }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SI-OCID - Absensi Berhasil</title>
+    <title>SIPEKA - Absensi Berhasil</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -30,7 +30,7 @@
                     </div>
 
                     <h2 class="fw-bold text-success mb-2">Absensi Berhasil!</h2>
-                    <p class="text-muted small mb-4">Kehadiran Anda telah dicatat dalam SI-OCID PTUN Bandar Lampung.</p>
+                    <p class="text-muted small mb-4">Kehadiran Anda telah dicatat dalam SIPEKA (Sistem Pemantauan Kehadiran) PTUN Bandar Lampung.</p>
 
                     <!-- Receipt Details Card -->
                     <div class="card border-0 bg-light p-4 rounded-3 text-start mb-4">

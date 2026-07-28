@@ -89,8 +89,8 @@
             </div>
 
             <div class="p-3 bg-light rounded-3 mb-3 border text-dark">
-                <h6><i class="bi bi-whatsapp text-success me-1"></i>Integrasi Fonnte</h6>
-                <p class="small mb-0 text-secondary">Sistem notifikasi absensi sidang terhubung secara otomatis ke gateway Fonnte menggunakan token API yang dikonfigurasi pada file lingkungan `.env`. Jika pengiriman notifikasi terganggu, silakan hubungi Tim IT Pengadilan untuk memeriksa sisa kuota atau keaktifan nomor gateway.</p>
+                <h6><i class="bi bi-whatsapp text-success me-1"></i>Integrasi Twilio API Gateway</h6>
+                <p class="small mb-0 text-secondary">Sistem notifikasi absensi sidang terhubung secara otomatis ke gateway Twilio API menggunakan Account SID, Auth Token, dan WhatsApp Sender yang dikonfigurasi pada file lingkungan `.env`. Jika pengiriman notifikasi terganggu, silakan hubungi Tim IT Pengadilan untuk memeriksa keaktifan akun Twilio.</p>
             </div>
 
             <div class="p-3 bg-light rounded-3 border text-dark">

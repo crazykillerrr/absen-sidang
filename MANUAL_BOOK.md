@@ -1,361 +1,315 @@
 # BUKU PANDUAN PENGGUNAAN SISTEM (MANUAL BOOK)
-## SI-ABDI / SI-OCID (Sistem Absensi Mandiri & Monitoring Kehadiran Pihak Persidangan)
+## SIPEKA (Sistem Pemantauan Kehadiran Pihak Persidangan)
 ### Pengadilan Tata Usaha Negara (PTUN) Bandar Lampung
 
 ---
 
 ![Versi Dokumen](https://img.shields.io/badge/Dokumen-Buku%20Panduan%20Penggunaan-047857?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Produksi%20v1.0-d4af37?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Web%20%26%20Mobile-0284c7?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Produksi%20v2.0--Terbaru-d4af37?style=for-the-badge)
+![Gateway](https://img.shields.io/badge/WA%20Gateway-Twilio%20API-0284c7?style=for-the-badge)
+![Platform](https://img.shields.io/badge/Platform-Web%20%26%20Mobile-047857?style=for-the-badge)
 
 ---
 
 ## DAFTAR ISI
 
-1. [BAB I: PENDAHULUAN](#bab-i-pendahuluan)
-   - 1.1 [Tentang Sistem](#11-tentang-sistem)
-   - 1.2 [Tujuan & Manfaat](#12-tujuan--manfaat)
-   - 1.3 [Pembagian Peran Pengguna (User Roles)](#13-pembagian-peran-pengguna-user-roles)
-   - 1.4 [Kebutuhan Perangkat & Peramban (Browser)](#14-kebutuhan-perangkat--peramban-browser)
-2. [BAB II: PANDUAN PIHAK BERPERKARA (PORTAL PUBLIK)](#bab-ii-panduan-pihak-berperkara-portal-publik)
-   - 2.1 [Metode Akses (Scan Kode QR / URL Portal)](#21-metode-akses-scan-kode-qr--url-portal)
-   - 2.2 [Langkah-Langkah Absensi Mandiri (Check-In)](#22-langkah-langkah-absensi-mandiri-check-in)
-   - 2.3 [Halaman Konfirmasi & Bukti Check-In](#23-halaman-konfirmasi--bukti-check-in)
-3. [BAB III: PANDUAN ADMINISTRATOR (BACKOFFICE PANEL)](#bab-iii-panduan-administrator-backoffice-panel)
-   - 3.1 [Akses Login Tersembunyi (Stealth Login Entry)](#31-akses-login-tersembunyi-stealth-login-entry)
-   - 3.2 [Memahami Dashboard Analitik Real-Time](#32-memahami-dashboard-analitik-real-time)
-   - 3.3 [Kelola Data Master (CRUD)](#33-kelola-data-master-crud)
-     - 3.3.1 [Manajemen Ruang Sidang](#331-manajemen-ruang-sidang)
-     - 3.3.2 [Manajemen Data Perkara](#332-manajemen-data-perkara)
-     - 3.3.3 [Manajemen Jadwal Persidangan](#333-manajemen-jadwal-persidangan)
-     - 3.3.4 [Manajemen Pihak Wajib Hadir](#334-manajemen-pihak-wajib-hadir)
-   - 3.4 [Fitur Panggil Persidangan Manual](#34-fitur-panggil-persidangan-manual)
-   - 3.5 [Integrasi & Sinkronisasi SIPP](#35-integrasi--sinkronisasi-sipp)
-   - 3.6 [Audit & Monitoring Log Notifikasi WhatsApp / Email](#36-audit--monitoring-log-notifikasi-whatsapp--email)
-   - 3.7 [Pencetakan & Ekspor Laporan Kehadiran (PDF & Excel)](#37-pencetakan--ekspor-laporan-kehadiran-pdf--excel)
-   - 3.8 [Akses Cepat "Daftar Hadir Hari Ini"](#38-akses-cepat-daftar-hadir-hari-ini)
-4. [BAB IV: OTOMATISASI NOTIFIKASI PIHAK PERSIDANGAN](#bab-iv-otomatisasi-notifikasi-pihak-persidangan)
-   - 4.1 [Jenis Notifikasi Otomatis untuk Pihak](#41-jenis-notifikasi-otomatis-untuk-pihak)
-   - 4.2 [Struktur & Contoh Pesan WhatsApp Pengingat H-1](#42-struktur--contoh-pesan-whatsapp-pengingat-h-1)
-   - 4.3 [Struktur & Contoh Pesan Panggilan Sidang](#43-struktur--contoh-pesan-panggilan-sidang)
-5. [BAB V: PEMELIHARAAN & PENANGANAN MASALAH (TROUBLESHOOTING)](#bab-v-pemeliharaan--penanganan-masalah-troubleshooting)
-   - 5.1 [Masalah QR Code & Sesi Check-In](#51-masalah-qr-code--sesi-check-in)
-   - 5.2 [Pengaturan Token & Koneksi WhatsApp Gateway (Fonnte API)](#52-pengaturan-token--koneksi-whatsapp-gateway-fonnte-api)
-   - 5.3 [Kegagalan Sinkronisasi Database SIPP](#53-kegagalan-sinkronisasi-database-sipp)
-6. [BAB VI: PENUTUP & KETENTUAN HUKUM/SOP](#bab-vi-penutup--ketentuan-hukumsop)
+1. [PANDUAN USER (PIHAK PERSIDANGAN / PUBLIK)](#1-panduan-user-pihak-persidangan--publik)
+   - 1.1 [Daftar Fitur untuk User](#11-daftar-fitur-untuk-user)
+   - 1.2 [Cara Penggunaan Absensi Mandiri (Check-In QR Code)](#12-cara-penggunaan-absensi-mandiri-check-in-qr-code)
+   - 1.3 [Menerima Notifikasi WhatsApp (Twilio) & Email](#13-menerima-notifikasi-whatsapp-twilio--email)
+2. [PANDUAN ADMIN (OPERATOR / PETUGAS BACKOFFICE)](#2-panduan-admin-operator--petugas-backoffice)
+   - 2.1 [Daftar Fitur untuk Admin](#21-daftar-fitur-untuk-admin)
+   - 2.2 [Cara Akses Stealth Login Admin](#22-cara-akses-stealth-login-admin)
+   - 2.3 [Cara Penggunaan Dashboard Real-Time](#23-cara-penggunaan-dashboard-real-time)
+   - 2.4 [Cara Pengelolaan Data Master (Perkara, Jadwal, Pihak, Ruang)](#24-cara-pengelolaan-data-master-perkara-jadwal-pihak-ruang)
+   - 2.5 [Cara Penggunaan Status Sidang (Warna Hijau & Merah)](#25-cara-penggunaan-status-sidang-warna-hijau--merah)
+   - 2.6 [Cara Penggunaan Fitur Panggil Sidang Broadcast (Twilio WA)](#26-cara-penggunaan-fitur-panggil-sidang-broadcast-twilio-wa)
+   - 2.7 [Cara Monitoring "Daftar Hadir Hari Ini" & Mode Layar Penuh (Fullscreen)](#27-cara-monitoring-daftar-hadir-hari-ini--mode-layar-penuh-fullscreen)
+   - 2.8 [Cara Sinkronisasi Data SIPP (Termasuk Minggu Kemarin)](#28-cara-sinkronisasi-data-sipp-termasuk-minggu-kemarin)
+   - 2.9 [Panduan Keamanan Data Seeder & Migration](#29-panduan-keamanan-data-seeder--migration)
+   - 2.10 [Cara Monitoring Log Notifikasi WA & Email](#210-cara-monitoring-log-notifikasi-wa--email)
+   - 2.11 [Cara Cetak & Ekspor Laporan Kehadiran (PDF & Excel)](#211-cara-cetak--ekspor-laporan-kehadiran-pdf--excel)
+3. [PENUTUP & INFORMASI DUKUNGAN](#3-penutup--informasi-dukungan)
 
 ---
 
-## BAB I: PENDAHULUAN
-
-### 1.1 Tentang Sistem
-**SI-ABDI / SI-OCID** (*Sistem Absensi Mandiri & Monitoring Kehadiran Pihak Persidangan*) adalah aplikasi berbasis web yang dikembangkan khusus untuk **Pengadilan Tata Usaha Negara (PTUN) Bandar Lampung**. Sistem ini memfasilitasi pihak berperkara (Penggugat, Tergugat, Saksi, Ahli, Kuasa Hukum) untuk melakukan pencatatan kehadiran (*check-in*) secara mandiri melalui pemindaian kode QR (*Zero-Login QR Scan*).
-
-Sistem dilengkapi dengan modul otomatisasi notifikasi (*WhatsApp & Email Gateway*) yang ditujukan langsung **kepada Pihak Berperkara / Pihak Persidangan** untuk memberikan pengingat jadwal sidang (H-1) serta notifikasi panggilan memasuki ruang sidang secara cepat dan transparan.
-
-### 1.2 Tujuan & Manfaat
-- **Pengingat Otomatis Pihak Sidang**: Mengirimkan pengingat H-1 dan notifikasi panggilan sidang langsung ke nomor WhatsApp/Email pihak berperkara.
-- **Pengurangan Kebisingan Area Tunggu**: Mengurangi panggilan berulang via pengeras suara (*panggilan fisik*) di ruang tunggu karena pihak menerima pesan panggilan langsung di ponselnya.
-- **Ketepatan Waktu Sidang**: Memastikan pihak hadir tepat waktu sesuai jam dan ruang sidang yang dijadwalkan.
-- **Transparansi & Akuntabilitas Data**: Menghasilkan log kehadiran presisi (timestamp & lokasi QR) yang terhubung langsung dengan data perkara SIPP.
-
-### 1.3 Pembagian Peran Pengguna (User Roles)
-
-| Peran Pengguna | Hak Akses & Deskripsi Tugas |
-| :--- | :--- |
-| **Pihak Berperkara (Publik / Penerima Notifikasi)** | Memindai Kode QR lokasi, memilih nomor perkara & nama pihak, mengonfirmasi kontak WhatsApp, melakukan absensi mandiri, serta **menerima notifikasi pengingat & panggilan sidang via WhatsApp/Email**. |
-| **Administrator / Operator IT** | Mengelola data master (Ruang, Perkara, Jadwal, Pihak), memantau Dashboard analitik, memicu panggil sidang/sync SIPP, serta mengekspor laporan. |
-
-### 1.4 Kebutuhan Perangkat & Peramban (Browser)
-- **Smartphone / Tablet (Pihak Berperkara)**: Menggunakan kamera smartphone dengan browser standar (Google Chrome, Safari, Samsung Internet, Edge) dan menerima WhatsApp/Email.
-- **Komputer PC / Laptop (Administrator)**: Layar minimal resolution 1280x720, browser Google Chrome / Mozilla Firefox versi terbaru.
-
----
-
-## BAB II: PANDUAN PIHAK BERPERKARA (PORTAL PUBLIK)
+## 1. PANDUAN USER (PIHAK PERSIDANGAN / PUBLIK)
 
 > [!NOTE]
-> Pihak berperkara **TIDAK memerlukan nama pengguna (username) atau kata sandi (password)** untuk melakukan absensi mandiri. Notifikasi pengingat dan panggilan persidangan akan dikirimkan otomatis ke WhatsApp/Email yang terdaftar pada sistem.
+> Pihak berperkara (Penggugat, Tergugat, Saksi, Ahli, Kuasa Hukum) **TIDAK memerlukan pendaftaran akun atau password**. Absensi dilakukan secara mudah dan mandiri via smartphone.
 
-### 2.1 Metode Akses (Scan Kode QR / URL Portal)
+---
 
-1. Pihak berperkara tiba di lokasi PTUN Bandar Lampung (misalnya: **Pos Satpam**, **Ruang Tunggu Sidang**, atau **Loket PTSP**).
-2. Buka aplikasi **Kamera** atau **QR Scanner** pada HP/Smartphone.
-3. Arahkan kamera ke stiker/poster **Kode QR Absensi Sidang**.
-4. Ketuk tautan URL yang muncul di layar HP.
-5. Sistem akan secara otomatis mengarahkan ke **Portal Halaman Utama** dengan mendeteksi parameter lokasi (contoh: `Lokasi: Pos Satpam`).
+### 1.1 Daftar Fitur untuk User
+
+| Fitur User | Deskripsi & Fungsi |
+| :--- | :--- |
+| **Scan QR Code Absensi** | Membuka portal absensi secara mandiri dari stiker QR yang ditempatkan di Pos Satpam, PTSP, atau Ruang Tunggu PTUN Bandar Lampung. |
+| **Pencarian Nomor Perkara** | Memilih nomor perkara persidangan yang dijadwalkan hari ini beserta rincian agenda dan ruang sidang. |
+| **Pilihan Nama Pihak** | Memilih identitas pihak yang sesuai (Penggugat, Tergugat, Saksi, Kuasa Hukum, dll). |
+| **Konfirmasi Kontak WA/Email** | Memastikan nomor WhatsApp dan email aktif untuk penerimaan bukti absen dan notifikasi sidang. |
+| **Bukti Check-In Digital** | Menerima bukti kehadiran digital berupa jam presisi absen, nama ruang sidang, dan lokasi scan. |
+| **Notifikasi WA & Email Panggilan Sidang** | Menerima pesan otomatis di WhatsApp (via Twilio API) dan Email secara serentak pada hari-H ketika sidang akan dimulai di ruang sidang. |
+
+---
+
+### 1.2 Cara Penggunaan Absensi Mandiri (Check-In QR Code)
+
+#### **Langkah 1: Memindai Kode QR (Scan QR Code)**
+1. Saat tiba di area PTUN Bandar Lampung (Pos Satpam / PTSP / Ruang Tunggu Sidang), buka aplikasi **Kamera** atau aplikasi **QR Scanner** pada HP Anda.
+2. Arahkan kamera HP ke stiker/poster **Kode QR Absensi Sidang**.
+3. Ketuk tautan web yang muncul di layar HP. Anda akan masuk ke **Portal Utama Absensi**.
 
 ```
-[ Pintu Masuk PTUN ] ──► [ Scan QR Code Area ] ──► [ Terbuka Form Absensi ]
+[ Tiba di PTUN ] ──► [ Scan QR Code ] ──► [ Terbuka Portal Absensi ]
 ```
 
 ---
 
-### 2.2 Langkah-Langkah Absensi Mandiri (Check-In)
+#### **Langkah 2: Mengisi Form Kehadiran**
+1. Pada portal utama, tekan tombol **"Mulai Absen Sekarang"**.
+2. **Pilih Nomor Perkara**: Ketuk menu dropdown perkara dan pilih Nomor Perkara Anda (contoh: `12/G/2026/PTUN.BDL`). Sistem akan otomatis menampilkan Ruang Sidang dan Agenda Sidang.
+3. **Pilih Nama Pihak**: Ketuk dropdown nama pihak dan pilih nama Anda yang sesuai.
+4. **Periksa Nomor WhatsApp & Email**: Pastikan nomor WhatsApp terisi dengan benar (contoh: `081234567890`) agar dapat menerima notifikasi panggilan.
+5. Tekan tombol **"Kirim Kehadiran (Check-In)"**.
 
 ```
 +-----------------------------------------------------------------------+
-|                SI-OCID : ABSENSI MANDIRI PERSIDANGAN                  |
+|                SIPEKA : FORM ABSENSI PERSIDANGAN MANDIRI              |
 +-----------------------------------------------------------------------+
-|  1. Pilih Nomor Perkara : [ 12/G/2026/PTUN.BDL - Penggugat vs Tergugat ] |
-|  2. Pilih Nama Pihak   : [ H. Ahmad Subardjo (Penggugat)             ] |
-|  3. Nomor WhatsApp     : [ 081234567890                              ] |
+|  1. Nomor Perkara : [ 12/G/2026/PTUN.BDL - Penggugat vs Tergugat ]   |
+|  2. Nama Pihak    : [ H. Ahmad Subardjo (Penggugat)             ]   |
+|  3. No. WhatsApp  : [ 081234567890                              ]   |
 |                                                                       |
 |                     [ KIRIM KEHADIRAN (CHECK-IN) ]                    |
 +-----------------------------------------------------------------------+
 ```
 
-1. **Buka Form Absensi**: Pada halaman portal utama, tekan tombol **"Mulai Absen Sekarang"**.
-2. **Pilih Nomor Perkara**:
-   - Klik dropdown menu **Nomor Perkara / Agenda Sidang**.
-   - Pilih nomor perkara persidangan yang dijadwalkan untuk sidang hari ini.
-   - *Sistem akan menampilkan rincian agenda sidang (misal: Pembuktian, Saksi, Putusan) serta Ruang Sidang terkait.*
-3. **Pilih Nama Pihak**:
-   - Klik dropdown **Nama Pihak Berperkara**.
-   - Pilih nama Anda yang sesuai dengan daftar pihak terdaftar (Penggugat, Tergugat, Saksi, Ahli, dsb.).
-4. **Konfirmasi Nomor WhatsApp**:
-   - Pastikan nomor WhatsApp aktif terisi dengan benar. Nomor ini berguna untuk menerima konfirmasi absensi dan pesan panggilan sidang.
-5. **Kirim Kehadiran**:
-   - Periksa kembali kebenaran data.
-   - Tekan tombol **"Kirim Kehadiran (Check-In)"**.
+---
+
+#### **Langkah 3: Menerima Bukti Check-In**
+Setelah menekan tombol kirim, layar HP akan menampilkan **Tanda Centang Hijau (Bukti Kehadiran)**:
+- Kehadiran Anda telah resmi tercatat di sistem pengadilan secara real-time.
+- Silakan menuju ke **Ruang Tunggu Sidang** yang tertera pada layar.
+- Tetap aktifkan HP Anda untuk menerima pesan WhatsApp panggilan sidang dari petugas.
 
 ---
 
-### 2.3 Halaman Konfirmasi & Bukti Check-In
+### 1.3 Menerima Notifikasi WhatsApp (Twilio) & Email
 
-Setelah menekan tombol kirim, layar HP akan menampilkan **Halaman Sukses Absensi**:
-- **Tanda Centang Hijau**: Menandakan kehadiran telah berhasil dicatat ke dalam basis data pengadilan.
-- **Rincian Absensi**: Menampilkan Nama Pihak, Status Pihak, Nomor Perkara, Ruang Sidang, dan Waktu Absen (*Timestamp*).
-- **Status Kelengkapan**: Menampilkan status kehadiran para pihak untuk perkara tersebut.
-- **Petunjuk Layanan**: Pihak diminta untuk menuju ke Ruang Tunggu Sidang dan memperhatikan notifikasi WhatsApp panggilan masuk.
-
----
-
-## BAB III: PANDUAN ADMINISTRATOR (BACKOFFICE PANEL)
-
-### 3.1 Akses Login Tersembunyi (Stealth Login Entry)
-
-Demi menjaga keamanan portal publik dari percobaan *brute force*, tombol pintu masuk administrator dirancang secara tersembunyi (*Stealth Entry*).
+Sebagai Pihak Persidangan, Anda akan menerima pesan otomatis di WhatsApp HP Anda yang terhubung dengan **Twilio API Gateway**:
 
 > [!TIP]
-> **Cara Mengakses Halaman Login Admin**:
-> 1. Buka Halaman Utama Portal (`/`).
-> 2. Gulir layar ke bagian paling bawah (**Footer**).
-> 3. Ketuk/Klik simbol hak cipta **`©`** yang berada pada teks footer.
-> 4. Anda akan dialihkan secara otomatis ke halaman **Login Admin** (`/login`).
-> 5. Atau, ketikkan URL langsung: `https://[domain-anda]/login`.
+> **Petunjuk Uji Coba (Twilio Sandbox)**:
+> Jika menggunakan akun Twilio gratis/trial, pastikan nomor WhatsApp penerima sudah mengirim pesan `join <kode-sandbox>` ke nomor WhatsApp Twilio Gateway (`+1 507 632 6184`).
 
-```
-Footer Website:
-"© 2026 PTUN Bandar Lampung. Hak Cipta Dilindungi."
- ▲
- └──► KLIK PADA SIMBOL HAK CIPTA © UNTUK MEMBUKA FORM LOGIN
-```
-
-- **Masukkan Email & Password Administrator**.
-- Tekan **Masuk / Login**.
-
----
-
-### 3.2 Memahami Dashboard Analitik Real-Time
-
-Setelah berhasil login, administrator akan disambut oleh **Dashboard Utama** (`/admin/dashboard`):
-
-1. **Kartu Ringkasan KPI**:
-   - **Total Perkara Hari Ini**: Jumlah perkara yang memiliki agenda sidang pada hari ini.
-   - **Total Pihak Wajib Hadir**: Jumlah akumulasi roster pihak yang harus hadir hari ini.
-   - **Tingkat Kehadiran (%)**: Persentase pihak yang sudah check-in dibanding total pihak wajib hadir.
-   - **Notifikasi Terkirim**: Jumlah notifikasi WhatsApp / Email yang berhasil dikirimkan ke pihak berperkara.
-2. **Grafik Visual (Chart.js)**:
-   - **Tren Kehadiran 7 Hari Terakhir**: Memantau fluktuasi statistik persidangan sepekan.
-   - **Distribusi Kehadiran per Ruang Sidang**: Memantau kepadatan ruang sidang harian.
-3. **Tabel Ringkasan Jadwal Sidang Hari Ini**:
-   - Menampilkan status realtime tiap perkara (`Belum Hadir`, `Sebagian Hadir`, `Lengkap 100%`).
-
----
-
-### 3.3 Kelola Data Master (CRUD)
-
-Menu bilah samping (*Sidebar*) menyediakan pengelolaan data master:
-
-#### 3.3.1 Manajemen Ruang Sidang (`/admin/ruang-sidang`)
-- **Fungsi**: Mengatur ruang sidang utama dan ruang sidang elektronik (E-Court).
-- **Langkah Tambah**: Tekan **+ Tambah Ruang Sidang** ──► Isi Kode Ruang, Nama Ruang, Kapasitas, & Keterangan ──► Simpan.
-
-#### 3.3.2 Manajemen Data Perkara (`/admin/perkara`)
-- **Fungsi**: Mendata nomor perkara, jenis gugatan, data Penggugat/Tergugat, serta penunjukan Majelis Hakim & Panitera Pengganti (PP).
-
-#### 3.3.3 Manajemen Jadwal Persidangan (`/admin/jadwal-sidang`)
-- **Fungsi**: Menentukan agenda sidang per tanggal, jam, dan lokasi ruang sidang.
-
-#### 3.3.4 Manajemen Pihak Wajib Hadir (`/admin/jadwal-sidang/{id}/pihak`)
-- **Fungsi**: Memasukkan nama-nama pihak berperkara (Penggugat, Tergugat, Kuasa Hukum, Saksi) beserta **Nomor WhatsApp & Email** masing-masing pihak untuk penerimaan notifikasi otomatis.
-
----
-
-### 3.4 Fitur Panggil Persidangan Manual
-
-Ketika sidang siap dimulai dan petugas admin ingin memanggil para pihak yang telah hadir:
-1. Masuk ke menu **Jadwal Sidang** (`/admin/jadwal-sidang`).
-2. Cari perkara yang bersangkutan.
-3. Klik tombol **"Panggil Sidang"** (Ikon Megafon/Lonceng).
-4. Sistem akan secara otomatis menembakkan pesan WhatsApp broadcast pemicu panggilan **langsung ke HP/WhatsApp pihak-pihak berperkara** yang terdaftar dan telah absen.
-
----
-
-### 3.5 Integrasi & Sinkronisasi SIPP
-
-Aplikasi dilengkapi dengan modul `SippSyncService` untuk mengambil data jadwal persidangan dan data pihak berperkara secara otomatis dari server **SIPP PTUN Bandar Lampung**.
-
-```
-[ Database SIPP PTUN ] ════( Sync Engine )════► [ Database SI-ABDI ]
-```
-
-1. Buka menu **Integrasi SIPP** (`/admin/integrasi-sipp`).
-2. Tekan tombol **"Sinkronkan Sekarang"**.
-3. Data perkara, jadwal, dan kontak para pihak terikat akan tersinkronkan otomatis.
-
----
-
-### 3.6 Audit & Monitoring Log Notifikasi WhatsApp / Email
-
-Untuk memastikan pesan panggilan/pengingat sampai ke pihak berperkara:
-
-1. Buka menu **Log Notifikasi** (`/admin/notifikasi`).
-2. Tabel menampilkan:
-   - **Penerima**: Nama Pihak & Nomor WhatsApp / Email Tujuan.
-   - **Tipe Notifikasi**: *Pengingat Sidang (H-1)* atau *Panggilan Sidang (Memasuki Ruang)*.
-   - **Status**: <span style="color:green; font-weight:bold;">[TERKIRIM]</span> / <span style="color:red; font-weight:bold;">[GAGAL]</span>.
-   - **Waktu Kirim**: Timestamp jam dan detik pengiriman.
-3. Tombol **"Kirim Ulang"** dapat ditekan jika terjadi pengiriman gagal.
-
----
-
-### 3.7 Pencetakan & Ekspor Laporan Kehadiran (PDF & Excel)
-
-1. Buka menu **Laporan Kehadiran** (`/admin/laporan`).
-2. Tentukan rentang tanggal & filter data.
-3. Unduh dalam format **PDF** atau **Excel**.
-
----
-
-### 3.8 Akses Cepat "Daftar Hadir Hari Ini"
-
-- Klik menu pintas **"Daftar Hadir Hari Ini"** (`/admin/daftar-hadir-hari-ini`) untuk melihat daftar realtime pihak yang telah check-in hari ini.
-
----
-
-## BAB IV: OTOMATISASI NOTIFIKASI PIHAK PERSIDANGAN
-
-### 4.1 Jenis Notifikasi Otomatis untuk Pihak
-
-Pesan otomatis pada sistem ini dikirimkan **khusus kepada Pihak Persidangan** (Penggugat, Tergugat, Saksi, Kuasa Hukum) melalui 2 metode pemicu:
-
-1. **Pengingat Sidang H-1 (Scheduled Task)**:
-   - Berjalan secara otomatis setiap hari untuk mengirimkan pengingat ke seluruh pihak yang memiliki jadwal sidang pada esok hari.
-2. **Panggilan Persidangan (Admin Trigger / Realtime)**:
-   - Dipicu saat petugas/admin menekan tombol *Panggil Sidang*, mengirimkan pesan agar pihak segera memasuki ruang sidang terkait.
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Pemicu Notifikasi (Jadwal H-1 / Tombol Panggil Sidang)      │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│ Kirim Pesan Otomatis (WhatsApp Gateway & Laravel Mail)      │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│ Diterima di WhatsApp / Email Pihak Persidangan              │
-│ (Penggugat, Tergugat, Saksi, Kuasa Hukum)                   │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-### 4.2 Struktur & Contoh Pesan WhatsApp Pengingat H-1
-
-Berikut adalah contoh pengingat otomatis H-1 yang diterima pihak persidangan:
-
-```
-📌 PENGINGAT SIDANG H-1 — PTUN BANDAR LAMPUNG
-
-Diingatkan kembali bahwa jadwal sidang Anda untuk:
-• Nomor Perkara : 12/G/2026/PTUN.BDL
-• Agenda Sidang : Pembuktian & Saksi
-• Ruang Sidang  : Ruang Utama (Cakra)
-• Waktu Sidang  : Esok Hari (22-07-2026 pukul 09:00 WIB)
-
-Harap hadir 30 menit sebelum sidang dimulai dan melakukan scan absensi mandiri di lokasi PTUN Bandar Lampung. Terima kasih.
----
-SI-OCID | Sistem Informasi Terpadu Absensi Sidang
-PTUN BANDAR LAMPUNG | (C) 2026
------------------------------------------
-Bantu kami untuk tidak memberikan tip atau tanda terima kasih dalam bentuk apapun kepada aparat peradilan.
-```
-
----
-
-### 4.3 Struktur & Contoh Pesan Panggilan Sidang
-
-Berikut adalah contoh pesan panggilan persidangan yang diterima pihak di ponselnya ketika sidang akan dimulai:
+1. **Pesan Panggilan Sidang (Real-time)**:
+   Diterima saat petugas admin memicu panggilan sidang dari dashboard admin.
 
 ```
 🔊 PANGGILAN PERSIDANGAN — PTUN BANDAR LAMPUNG
 
-Sidang untuk perkara nomor 12/G/2026/PTUN.BDL dengan agenda Pembuktian & Saksi di Ruang Utama (Cakra) akan segera dimulai.
+Sidang perkara No. 12/G/2026/PTUN.BDL dengan agenda Pembuktian & Saksi
+di Ruang Utama (Cakra) akan segera dimulai.
 
-Kepada Bapak/Ibu H. Ahmad Subardjo (Penggugat) harap segera memasuki ruang sidang. Terima kasih.
----
-SI-OCID | Sistem Informasi Terpadu Absensi Sidang
-PTUN BANDAR LAMPUNG | (C) 2026
+Kepada Yth. Bapak/Ibu H. Ahmad Subardjo (Penggugat),
+harap segera memasuki ruang sidang. Terima kasih.
+
 -----------------------------------------
 Bantu kami untuk tidak memberikan tip atau tanda terima kasih dalam bentuk apapun kepada aparat peradilan.
+
+*SIPEKA | Sistem Pemantauan Kehadiran* 
+*PTUN BANDAR LAMPUNG* | (C) 2026
 ```
 
 ---
 
-## BAB V: PEMELIHARAAN & PENANGANAN MASALAH (TROUBLESHOOTING)
-
-### 5.1 Masalah QR Code & Sesi Check-In
-
-| Gejala Masalah | Kemungkinan Penyebab | Solusi / Tindakan |
-| :--- | :--- | :--- |
-| **Lokasi QR tidak terdeteksi di Form** | URL QR Code rusak atau parameter `?qrcode=` hilang | Pastikan Kode QR yang dicetak merujuk pada format URL valid (misal: `https://[domain]/?qrcode=QR-SATPAM`). |
-| **Pihak tidak menerima WhatsApp** | Nomor HP pihak salah / tidak terformat dengan benar | Pastikan nomor telepon diawali angka `08...` atau `628...` di data Pihak Sidang. |
+## 2. PANDUAN ADMIN (OPERATOR / PETUGAS BACKOFFICE)
 
 ---
 
-### 5.2 Pengaturan Token & Koneksi WhatsApp Gateway (Fonnte API)
+### 2.1 Daftar Fitur untuk Admin
 
-Pengiriman notifikasi WhatsApp mengandalkan API Fonnte. Jika notifikasi tidak terkirim:
+| Fitur Admin | Deskripsi & Fungsi |
+| :--- | :--- |
+| **Stealth Login Entry** | Akses masuk login admin yang aman dan tersembunyi via tombol footer. |
+| **Dashboard Analitik Real-Time** | Ringkasan statistik perkara, jumlah kehadiran harian, grafik tren, serta tabel realtime. |
+| **Kelola Data Perkara** | Manajemen data perkara (Tambah, Edit, Hapus, Detail Majelis Hakim & PP). |
+| **Kelola Jadwal & Pihak Sidang** | Menentukan jadwal sidang, agenda, dan mendaftarkan kontak WA/Email para pihak. |
+| **Kelola Ruang Sidang** | Mengatur master data ruang sidang utama maupun elektronik. |
+| **Kontrol Status Sidang (Hijau/Merah)**| Mengatur status *Mulai Sidang* (**Warna Hijau**) dan *Sidang Selesai* (**Warna Merah**). |
+| **Panggil Sidang Broadcast (Twilio WA)**| Memicu pengiriman pesan panggilan persidangan via Twilio WhatsApp API secara instan ke HP para pihak. |
+| **Daftar Hadir Hari Ini (Live Monitor)**| Pemantauan kehadiran realtime dengan fitur *Auto-Scroll* & *Mode Layar Penuh (Fullscreen)*. |
+| **Integrasi & Sinkronisasi SIPP** | Sinkronisasi data perkara & jadwal otomatis dari SIPP PTUN Bandar Lampung (termasuk jadwal minggu kemarin). |
+| **Keamanan Data Seeder (`firstOrCreate`)**| Perlindungan seeder agar perintah `db:seed` tidak mengapus data riil/absensi. |
+| **Log Notifikasi WA & Email** | Audit pengiriman pesan notifikasi Twilio & Email dengan fitur kirim ulang (*retry*). |
+| **Ekspor Laporan Kehadiran** | Mencetak dan mengunduh laporan presensi ke format PDF & Excel. |
 
-1. Buka berkas `.env` pada server web.
-2. Pastikan variabel berikut terisi dengan token Fonnte aktif:
-   ```env
-   FONNTE_TOKEN=your_fonnte_api_token_here
-   FONNTE_URL=https://api.fonnte.com/send
+---
+
+### 2.2 Cara Akses Stealth Login Admin
+
+Untuk menjaga tampilan publik tetap rapi dan aman, tombol login admin disembunyikan secara khusus:
+
+1. Buka Halaman Utama Portal (`/`).
+2. Gulir layar ke bagian paling bawah (**Footer**).
+3. Ketuk/Klik simbol hak cipta **`©`** pada teks footer (*© PTUN Bandar Lampung*).
+4. Anda akan otomatis diarahkan ke halaman **Login Admin** (`/login`).
+5. Masukkan **Email** (`admin@ptun.go.id`) dan **Password** Admin, lalu tekan **Login**.
+
+---
+
+### 2.3 Cara Penggunaan Dashboard Real-Time
+
+Setelah login, Admin akan diarahkan ke halaman **Dashboard** (`/admin/dashboard`):
+
+1. **Kartu Statistik**:
+   - **Total Perkara**: Jumlah seluruh perkara terdaftar.
+   - **Sidang Hari Ini**: Jumlah jadwal persidangan hari ini.
+   - **Kehadiran Hari Ini**: Jumlah pihak yang telah melakukan check-in hari ini.
+   - **Sidang Berjalan**: Jumlah sidang yang sedang berlangsung / selesai.
+   - **Total Notifikasi Email/WA**: Jumlah pesan terkirim.
+2. **Tabel Persidangan Hari Ini**:
+   - Menampilkan daftar sidang hari ini secara realtime (otomatis diperbarui setiap 2 detik).
+   - Tekan tombol **"Panggil"** pada baris perkara untuk mengirim pesan panggilan ke WhatsApp pihak via Twilio Gateway.
+3. **Tabel Kehadiran Terbaru**:
+   - Menampilkan log urutan pihak yang baru saja melakukan absensi mandiri di lokasi.
+
+---
+
+### 2.4 Cara Pengelolaan Data Master (Perkara, Jadwal, Pihak, Ruang)
+
+#### **A. Kelola Data Perkara (`/admin/perkara`)**
+1. Buka menu **Kelola Perkara** di sidebar.
+2. Tekan tombol **"+ Tambah Perkara"**.
+3. Isi Nomor Perkara, Jenis Perkara, Tanggal Masuk, Majelis Hakim, dan Panitera Pengganti.
+4. Tekan **Simpan Data Perkara**.
+
+#### **B. Kelola Ruang Sidang (`/admin/ruang-sidang`)**
+1. Buka menu **Ruang Sidang**.
+2. Tekan **"+ Tambah Ruang Sidang"**.
+3. Isi Nama Ruang (contoh: *Ruang Utama Cakra*), Kode Ruang, dan Kapasitas.
+4. Tekan **Simpan**.
+
+#### **C. Kelola Jadwal Sidang & Pihak Wajib Hadir (`/admin/jadwal-sidang`)**
+1. Buka menu **Jadwal Sidang**.
+2. Tekan **"+ Tambah Jadwal Sidang"**.
+3. Pilih Perkara, Tanggal Sidang, Jam Sidang, Agenda Sidang, dan Ruang Sidang.
+4. Tekan **Simpan**.
+5. Pada tabel jadwal, tekan tombol **"Kelola Pihak"** untuk memasukkan daftar nama Penggugat, Tergugat, Saksi, beserta **Nomor WhatsApp & Email** masing-masing.
+
+---
+
+### 2.5 Cara Penggunaan Status Sidang (Warna Hijau & Merah)
+
+Fitur ini digunakan oleh Admin untuk menandai kondisi persidangan di Ruang Sidang secara visual di layar pemantauan:
+
+```
+[ Belum Dimulai ] ──( Klik "Mulai Sidang" )──► [ SIDANG BERLANGSUNG : WARNA HIJAU ]
+[ Berlangsung   ] ──( Klik "Sidang Selesai" )──► [ SIDANG SELESAI    : WARNA MERAH ]
+```
+
+#### **1. Mengaktifkan "Mulai Sidang" (Sidang Berlangsung - WARNA HIJAU)**:
+1. Buka menu **Kehadiran Hari Ini** (`/admin/daftar-hadir-hari-ini`).
+2. Cari kartu perkara yang akan disidangkan.
+3. Tekan tombol hijau **"Mulai Sidang"**.
+4. **Perubahan Visual**:
+   - Seluruh bingkai kartu & latar belakang berubah menjadi **WARNA HIJAU** (`#10b981` / `#f0fdf4`).
+   - Terdapat badge indikator berkedip hijau **`SIDANG BERLANGSUNG`**.
+   - Banner informasi mengumumkan persidangan sedang berlangsung di ruang sidang terkait.
+
+#### **2. Mengaktifkan "Sidang Selesai" (Sidang Selesai - WARNA MERAH)**:
+1. Ketika persidangan perkara tersebut telah ditutup oleh Majelis Hakim, tekan tombol merah **"Sidang Selesai"**.
+2. **Perubahan Visual**:
+   - Bingkai kartu dan latar belakang berubah menjadi **WARNA MERAH** (`#ef4444` / `#fef2f2`).
+   - Badge indikator berubah menjadi **`SIDANG SELESAI`** berwarna merah.
+   - Banner informasi mengumumkan persidangan perkara ini telah selesai dilaksanakan.
+
+---
+
+### 2.6 Cara Penggunaan Fitur Panggil Sidang Broadcast (Twilio WA)
+
+1. Buka menu **Dashboard** (`/admin/dashboard`) atau **Jadwal Sidang** (`/admin/jadwal-sidang`).
+2. Cari perkara yang pihak-pihaknya telah hadir di ruang tunggu.
+3. Tekan tombol **"Panggil"** (Ikon Megafon).
+4. Sistem akan memanggil `WhatsAppNotificationService` dan memicu pengiriman pesan WhatsApp via **Twilio API Gateway** ke seluruh pihak terdaftar.
+
+---
+
+### 2.7 Cara Monitoring "Daftar Hadir Hari Ini" & Mode Layar Penuh (Fullscreen)
+
+Menu **Kehadiran Hari Ini** (`/admin/daftar-hadir-hari-ini`) dirancang khusus untuk ditampilkan di layar monitor TV ruang tunggu maupun monitor meja admin:
+
+1. **Auto-Polling Real-Time**: Data kehadiran otomatis terupdate setiap 2 detik tanpa perlu me-refresh halaman browser.
+2. **Auto-Scroll Looping**: Tampilan kartu akan melakukan perguliran layar (*scrolling*) secara otomatis dan seamless agar seluruh perkara dapat terpantau.
+3. **Hover Auto-Pause (Jeda Otomatis Kursor Mouse)**:
+   - Ketika Admin mengarahkan kursor mouse ke atas kartu perkara untuk mengklik tombol **"Mulai Sidang"** atau **"Sidang Selesai"**, perguliran scroll otomatis berhenti secara instan agar posisi tombol tetap tenang dan akurat saat diklik.
+   - Saat kursor mouse digeser keluar dari kartu perkara, perguliran scroll otomatis melanjutkan perjalanan kembali.
+4. **Mode Layar Penuh (Fullscreen)**:
+   - Tekan tombol **"Layar Penuh"** di pojok kanan atas.
+   - Halaman akan memaksimalkan tampilan layar TV/Monitor dengan menyembunyikan sidebar dan navbar.
+   - Untuk kembali ke tampilan normal, tekan tombol **"Layar Normal"** atau tombol **ESC** di keyboard.
+
+---
+
+### 2.8 Cara Sinkronisasi Data SIPP (Termasuk Minggu Kemarin)
+
+Untuk mengambil data perkara & jadwal sidang langsung dari portal SIPP PTUN Bandar Lampung:
+
+1. Buka menu **Integrasi SIPP** (`/admin/integrasi-sipp`).
+2. Tekan tombol **"Sinkronkan SIPP"**.
+3. Sistem akan secara otomatis menarik data dari rentang **7 hari ke belakang (minggu kemarin)** hingga **10 hari ke depan**.
+4. Anda juga dapat menjalankan sinkronisasi via terminal/Artisan command:
+   ```bash
+   php artisan sipp:sync --days-back=7 --days-forward=10
    ```
-3. Cek sisa kuota pesan di akun Fonnte (`https://fonnte.com`).
+5. Data Perkara, Ruang Sidang, dan Jadwal Sidang akan langsung diperbarui tanpa entri ganda.
 
 ---
 
-### 5.3 Kegagalan Sinkronisasi Database SIPP
+### 2.9 Panduan Keamanan Data Seeder & Migration
 
-| Gejala | Penyebab | Solusi |
-| :--- | :--- | :--- |
-| **Gagal terhubung ke Database SIPP** | IP Server web terblokir / Kredensial DB SIPP berubah | Periksa konfigurasi `SIPP_DB_HOST`, `SIPP_DB_PORT`, dan password di `.env`. |
+> [!IMPORTANT]
+> **Perbedaan Perintah Database yang Harus Dipahami**:
+> 
+> 1. 🟢 **`php artisan db:seed` (AMAN)**:
+>    - Berkas `DatabaseSeeder.php` menggunakan logika `firstOrCreate()`.
+>    - Menjalankan `db:seed` **TIDAK AKAN MENGHAPUS** data sinkronisasi SIPP atau data absensi yang sudah ada di database.
+> 
+> 2. ⚠️ **`php artisan migrate:refresh` / `migrate:fresh` (BAHAYA DARI REMOVAL DATA)**:
+>    - Perintah ini berfungsi menghapus total (*drop/rollback*) seluruh tabel database dari nol.
+>    - **JANGAN dijalankan** apabila database sudah memiliki data riil sinkronisasi SIPP atau riwayat absensi yang ingin dipertahankan.
+
+---
+
+### 2.10 Cara Monitoring Log Notifikasi WA & Email
+
+1. Buka menu **Log Notifikasi** (`/admin/notifikasi`).
+2. Tabel menampilkan riwayat pengiriman notifikasi:
+   - Nama Penerima & Nomor WhatsApp/Email.
+   - Jenis Notifikasi (*Pengingat H-1* / *Panggilan Sidang* via Twilio).
+   - Status Pengiriman: <span style="color:green; font-weight:bold;">[TERKIRIM]</span> atau <span style="color:red; font-weight:bold;">[GAGAL]</span>.
+3. Jika status pengiriman `GAGAL` (misal akibat gangguan jaringan), tekan tombol **"Kirim Ulang"** untuk mengulang pengiriman pesan.
 
 ---
 
-## BAB VI: PENUTUP & KETENTUAN HUKUM/SOP
+### 2.11 Cara Cetak & Ekspor Laporan Kehadiran (PDF & Excel)
 
-Buku Panduan ini disusun sebagai pedoman operasional resmi penggunaan **SI-ABDI / SI-OCID** di lingkungan **Pengadilan Tata Usaha Negara Bandar Lampung**.
-
-- **Disusun Oleh**: Tim Pengembang & Tim IT PTUN Bandar Lampung
-- **Standar Operasional**: Mengacu pada Cetak Biru Pembaharuan Peradilan Mahkamah Agung RI & Digitalisasi Layanan Persidangan Era Modern.
+1. Buka menu **Laporan Kehadiran** (`/admin/laporan`).
+2. Tentukan **Rentang Tanggal** laporan (misal: *01/07/2026 s/d 31/07/2026*).
+3. Pilih Filter tambahan jika diperlukan (Filter Perkara / Filter Ruang Sidang).
+4. Tekan tombol:
+   - **"Cetak PDF"**: Untuk mengunduh berkas laporan format PDF siap cetak.
+   - **"Ekspor Excel"**: Untuk mengunduh data mentah laporan format `.xlsx`.
 
 ---
-*Buku Panduan Penggunaan System — PTUN Bandar Lampung © 2026*
+
+## 3. PENUTUP & INFORMASI DUKUNGAN
+
+Buku panduan penggunaan ini disusun untuk mempermudah operasional **Pihak Berperkara** dan **Petugas Administrator** dalam memanfaatkan aplikasi **SIPEKA PTUN Bandar Lampung**.
+
+- **Dukungan Teknis IT**: Tim Komputer & IT PTUN Bandar Lampung
+- **Alamat Kantor**: Jl. Basuki Rahmat No. 26, Teluk Betung, Bandar Lampung
+
+---
+*Buku Panduan Penggunaan Sistem SIPEKA — PTUN Bandar Lampung © 2026 (Versi 2.0 Terbaru)*

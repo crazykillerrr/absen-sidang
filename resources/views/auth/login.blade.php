@@ -261,7 +261,7 @@
                 </div>
                 
                 <h1 class="app-title mb-1 text-uppercase fs-4">PTUN Bandar Lampung</h1>
-                <p class="app-subtitle mb-4 small text-white-50">SI-OCID: Sistem Informasi Online Check-In Diri</p>
+                <p class="app-subtitle mb-4 small text-white-50">SIPEKA: Sistem Pemantauan Kehadiran</p>
 
                 <div class="card glass-card-portal border-0 shadow-lg p-4 p-md-5 text-start">
                     <h3 class="fw-bold mb-4 text-center text-white">Masuk Administrator</h3>

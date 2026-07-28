@@ -17,10 +17,12 @@ class SippSyncService
      * Synchronize schedules from SIPP PTUN Bandar Lampung.
      *
      * @param string|null $html Optional HTML content to parse (useful for testing/offline sync).
+     * @param int $daysBefore Number of days in the past to sync (default: 0).
+     * @param int $daysAhead Number of days in the future to sync (default: 10).
      * @return int Number of synchronized schedules.
      * @throws \Exception
      */
-    public function sync(?string $html = null): int
+    public function sync(?string $html = null, int $daysBefore = 0, int $daysAhead = 10): int
     {
         $startTime = now();
         $syncedCount = 0;
@@ -41,10 +43,11 @@ class SippSyncService
                 return $syncedCount;
             }
 
-            // Otherwise, fetch schedules for the next 10 days
+            // Otherwise, fetch schedules for the date range (-daysBefore to +daysAhead)
             $failedDates = [];
+            $totalDays = ($daysAhead - (-$daysBefore)) + 1;
             $jar = new \GuzzleHttp\Cookie\CookieJar();
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = -$daysBefore; $i <= $daysAhead; $i++) {
                 $dateStr = now()->addDays($i)->format('d/m/Y');
                 $url = "https://sipp.ptun-bandarlampung.go.id/list_jadwal_sidang/search/1/{$dateStr}";
                 
@@ -68,13 +71,16 @@ class SippSyncService
                 }
             }
 
-            // If ALL 10 days failed, throw a general exception to log as a failure
-            if (count($failedDates) === 10) {
-                throw new \Exception("Gagal menghubungi SIPP untuk seluruh 10 hari pencarian.");
+            // If ALL days failed, throw a general exception to log as a failure
+            if (count($failedDates) === $totalDays) {
+                throw new \Exception("Gagal menghubungi SIPP untuk seluruh {$totalDays} hari pencarian.");
             }
 
             // Log details of success and any failed dates
-            $keterangan = "Berhasil sinkronisasi {$syncedCount} jadwal sidang dari SIPP untuk 10 hari ke depan.";
+            $periodText = $daysBefore > 0 
+                ? "{$daysBefore} hari lalu s/d {$daysAhead} hari ke depan" 
+                : "hari ini s/d {$daysAhead} hari ke depan";
+            $keterangan = "Berhasil sinkronisasi {$syncedCount} jadwal sidang dari SIPP ({$periodText}).";
             if (!empty($failedDates)) {
                 $keterangan .= " (Gagal pada tanggal: " . implode(', ', $failedDates) . ")";
             }

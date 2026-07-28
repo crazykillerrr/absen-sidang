@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SI-OCID - Absensi Mandiri Sidang PTUN BDL</title>
+    <title>SIPEKA - Absensi Mandiri Sidang PTUN BDL</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
@@ -111,7 +111,7 @@
             <!-- Card Absensi (Glassmorphism) -->
             <div class="card glass-card-portal border-0 shadow-lg p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <h3 class="fw-bold fs-3 text-white mb-1">SI-OCID: Form Absensi Mandiri</h3>
+                    <h3 class="fw-bold fs-3 text-white mb-1">SIPEKA: Form Absensi Mandiri</h3>
                     <p class="text-white-50 small mb-0">Silakan isi formulir kehadiran di bawah ini untuk memulai absensi sidang</p>
                     
                     @if(!empty($lokasi))

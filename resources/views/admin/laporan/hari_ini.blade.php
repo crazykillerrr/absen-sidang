@@ -20,6 +20,7 @@
                 <span id="digital-date" class="small text-secondary">Tanggal Hari Ini</span>
             </div>
             <div class="vr d-none d-sm-block" style="opacity: 0.15;"></div>
+
             <!-- Fullscreen Button -->
             <button type="button" class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2 shadow-sm" id="btn-fullscreen">
                 <i class="bi bi-fullscreen"></i>
@@ -164,14 +165,25 @@
             });
         }
 
-        // --- 3. Animasi Auto-Scroll Looping ---
+        // --- 3. Animasi Auto-Scroll Looping & Hover Auto-Pause ---
         const scrollContainer = document.getElementById('attendance-scroll-container');
         const scrollContent = document.getElementById('attendance-scroll-content');
         
         let scrollInterval;
         let scrollTop = 0;
         let scrollSpeed = 0.5; // Kecepatan scroll sedang & nyaman dibaca
-        
+        let isHoverPaused = false;
+
+        // Hover Auto-Pause: Otomatis jeda scroll saat kursor mouse berada di atas daftar perkara
+        if (scrollContainer) {
+            scrollContainer.addEventListener('mouseenter', function() {
+                isHoverPaused = true;
+            });
+            scrollContainer.addEventListener('mouseleave', function() {
+                isHoverPaused = false;
+            });
+        }
+
         function initializeScrolling() {
             if (!scrollContainer || !scrollContent) return;
             
@@ -198,15 +210,17 @@
                 scrollTop = scrollContainer.scrollTop;
                 
                 function animateScroll() {
-                    const currentContentHeight = scrollContent.scrollHeight;
-                    scrollTop += scrollSpeed;
-                    
-                    // Reset ke atas ketika konten asli selesai ter-scroll
-                    if (scrollTop >= currentContentHeight + 24) { // 24 adalah margin/gap
-                        scrollTop = 0;
+                    if (!isHoverPaused) {
+                        const currentContentHeight = scrollContent.scrollHeight;
+                        scrollTop += scrollSpeed;
+                        
+                        // Reset ke atas ketika konten asli selesai ter-scroll
+                        if (scrollTop >= currentContentHeight + 24) { // 24 adalah margin/gap
+                            scrollTop = 0;
+                        }
+                        
+                        scrollContainer.scrollTop = scrollTop;
                     }
-                    
-                    scrollContainer.scrollTop = scrollTop;
                     scrollInterval = requestAnimationFrame(animateScroll);
                 }
                 
@@ -292,7 +306,33 @@
 
 <!-- Custom CSS untuk Animasi Status Sidang & Fullscreen Mode -->
 <style>
-    /* Flashing / Blinking Animation for Live Sidang (Red) */
+    /* Flashing / Blinking Animation for Live Sidang (Green) */
+    @keyframes blink-green-anim {
+        0% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.98); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+
+    .blink-green-badge {
+        animation: blink-green-anim 1.2s infinite ease-in-out;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.75) !important;
+    }
+
+    .blink-green-text {
+        animation: blink-green-anim 1.8s infinite ease-in-out;
+    }
+
+    .pulse-dot-green-blink {
+        width: 8px;
+        height: 8px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
+        animation: pulse-dot-white 1s infinite;
+    }
+
+    /* Legacy Red Animation for reference */
     @keyframes blink-red-anim {
         0% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.4; transform: scale(0.98); }
@@ -324,6 +364,18 @@
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
     }
 
+    .border-success-live {
+        border: 2.5px solid #10b981 !important;
+        background-color: #f0fdf4 !important;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2) !important;
+    }
+
+    .border-danger-done {
+        border: 2.5px solid #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15) !important;
+    }
+
     .border-danger-live {
         border: 2.5px solid #ef4444 !important;
         background-color: #fef2f2 !important;
@@ -334,6 +386,14 @@
         border: 2.5px solid #10b981 !important;
         background-color: #f0fdf4 !important;
         box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15) !important;
+    }
+
+    .pulse-green-btn {
+        transition: all 0.2s ease;
+    }
+    .pulse-green-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
     }
 
     .pulse-red-btn {
@@ -495,6 +555,29 @@
     body.fullscreen-mode #attendance-scroll-container {
         height: calc(100vh - 130px) !important;
         padding: 0 40px !important;
+    }
+
+    /* Responsive Mobile Adjustments */
+    @media (max-width: 767.98px) {
+        .attendance-header {
+            padding: 16px 20px !important;
+        }
+        .stat-container {
+            padding: 16px 20px !important;
+        }
+        #attendance-scroll-container {
+            height: auto !important;
+            max-height: calc(100vh - 260px) !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        body.fullscreen-mode .attendance-header {
+            padding: 16px 20px !important;
+        }
+        body.fullscreen-mode #attendance-scroll-container {
+            height: calc(100vh - 90px) !important;
+            padding: 0 16px !important;
+        }
     }
 </style>
 @endsection

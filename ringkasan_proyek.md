@@ -21,7 +21,7 @@ Sistem ini dirancang menggunakan standar pengembangan modern untuk memastikan st
    * **Custom Glassmorphism UI**: Desain bertema peradilan modern (kombinasi warna hijau zamrud dan emas kuningan) dengan latar belakang gradasi dinamis dan dekorasi partikel bercahaya (*ambient glowing orbs*).
 4. **Integrasi Pihak Ketiga & Otomatisasi**:
    * **SIPP Web Crawler (Symfony DomCrawler)**: Modul untuk mengambil data jadwal sidang langsung secara eksternal dari web SIPP PTUN Bandar Lampung.
-   * **Fonnte API Gateway**: Saluran integrasi WhatsApp untuk pengiriman broadcast status kehadiran.
+   * **Twilio API Gateway**: Saluran integrasi WhatsApp untuk pengiriman broadcast status kehadiran dan panggilan sidang.
    * **DomPDF & Laravel Excel**: Generator dokumen ekspor untuk file laporan administratif (PDF/Excel).
 
 ---

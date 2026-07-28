@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - SI-OCID PTUN BDL</title>
+    <title>@yield('title') - SIPEKA PTUN BDL</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -44,7 +44,7 @@
             <div class="sidebar-header d-flex align-items-center justify-content-between">
                 <a href="{{ route('admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
                     <img src="{{ asset('images/logo-ma.png') }}?v=3" alt="Logo" style="height: 38px; width: auto; object-fit: contain;">
-                    <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">SI-OCID</span>
+                    <span class="fw-bold fs-6 text-uppercase tracking-wider text-white">SIPEKA</span>
                 </a>
                 <button type="button" id="sidebarCollapseMobile" class="btn d-lg-none border-0 text-white p-1" title="Tutup Menu">
                     <i class="bi bi-x-lg fs-4"></i>

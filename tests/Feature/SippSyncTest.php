@@ -128,7 +128,7 @@ class SippSyncTest extends TestCase
         }
     }
 
-    public function test_sipp_sync_service_crawls_10_days_correctly(): void
+    public function test_sipp_sync_service_crawls_date_range_correctly(): void
     {
         $mockHtml = '
         <html>
@@ -158,19 +158,19 @@ class SippSyncTest extends TestCase
         </body>
         </html>';
 
-        // Fake the 10 days HTTP requests
+        // Fake the HTTP requests
         \Illuminate\Support\Facades\Http::fake([
             'https://sipp.ptun-bandarlampung.go.id/*' => \Illuminate\Support\Facades\Http::response($mockHtml, 200),
         ]);
 
         $service = new SippSyncService();
-        $count = $service->sync(); // This calls the faked HTTP requests 10 times
+        $count = $service->sync(); // Default: 0 days ago to 10 days ahead (0 to +10 = 11 days)
 
-        $this->assertEquals(10, $count);
+        $this->assertEquals(11, $count);
         $this->assertEquals(1, JadwalSidang::count());
         
         $this->assertDatabaseHas('sinkronisasi_log', [
-            'jumlah_data' => 10,
+            'jumlah_data' => 11,
             'status' => 'berhasil'
         ]);
     }
@@ -205,10 +205,10 @@ class SippSyncTest extends TestCase
         </body>
         </html>';
 
-        // Fake 8 dates to succeed, and 2 dates to fail (total 10)
+        // Fake 9 dates to succeed, and 2 dates to fail (total 11)
         $today = now();
         $urls = [];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i <= 10; $i++) {
             $dateStr = $today->copy()->addDays($i)->format('d/m/Y');
             $urls["https://sipp.ptun-bandarlampung.go.id/list_jadwal_sidang/search/1/{$dateStr}"] = 
                 ($i === 1 || $i === 3) 
@@ -219,14 +219,14 @@ class SippSyncTest extends TestCase
         \Illuminate\Support\Facades\Http::fake($urls);
 
         $service = new SippSyncService();
-        $count = $service->sync(); // Syncs the next 10 days
+        $count = $service->sync(); // Syncs 0 to +10 days
 
-        // 8 successful requests of 1 schedule each
-        $this->assertEquals(8, $count);
+        // 9 successful requests of 1 schedule each
+        $this->assertEquals(9, $count);
         $this->assertEquals(1, JadwalSidang::count());
 
         $this->assertDatabaseHas('sinkronisasi_log', [
-            'jumlah_data' => 8,
+            'jumlah_data' => 9,
             'status' => 'berhasil'
         ]);
 

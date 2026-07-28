@@ -12,7 +12,7 @@ class SippSyncCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sipp:sync';
+    protected $signature = 'sipp:sync {--days-before=0} {--days-ahead=10}';
 
     /**
      * The console command description.
@@ -26,10 +26,16 @@ class SippSyncCommand extends Command
      */
     public function handle(SippSyncService $service): int
     {
-        $this->info('Memulai sinkronisasi jadwal sidang SIPP...');
+        $daysBefore = (int) $this->option('days-before');
+        $daysAhead = (int) $this->option('days-ahead');
+
+        $periodText = $daysBefore > 0 
+            ? "{$daysBefore} hari lalu s/d {$daysAhead} hari ke depan" 
+            : "hari ini s/d {$daysAhead} hari ke depan";
+        $this->info("Memulai sinkronisasi jadwal sidang SIPP ({$periodText})...");
 
         try {
-            $count = $service->sync();
+            $count = $service->sync(null, $daysBefore, $daysAhead);
             $this->info("Sinkronisasi berhasil! Menambahkan/memperbarui {$count} jadwal sidang.");
             return Command::SUCCESS;
         } catch (\Exception $e) {
