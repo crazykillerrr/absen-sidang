@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/bdlpsipeka/public_html
+    - /bin/cp -R public/* $DEPLOYPATH
+    - /bin/sed -i 's|\.\./vendor/autoload\.php|/home/bdlpsipeka/absen-sidang/vendor/autoload.php|g' $DEPLOYPATH/index.php
+    - /bin/sed -i 's|\.\./bootstrap/app\.php|/home/bdlpsipeka/absen-sidang/bootstrap/app.php|g' $DEPLOYPATH/index.php
