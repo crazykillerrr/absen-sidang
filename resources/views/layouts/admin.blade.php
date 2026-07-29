@@ -57,57 +57,74 @@
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </li>
-                <li class="{{ Route::is('admin.perkara.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.perkara.index') }}">
-                        <i class="bi bi-folder2-open"></i> Kelola Perkara
-                    </a>
-                </li>
-                <li class="{{ Route::is('admin.jadwal-sidang.*') || Route::is('admin.pihak-sidang.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.jadwal-sidang.index') }}">
-                        <i class="bi bi-calendar3"></i> Jadwal Sidang
-                    </a>
-                </li>
 
-                <li class="{{ Route::is('admin.ruang-sidang.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.ruang-sidang.index') }}">
-                        <i class="bi bi-door-closed"></i> Ruang Sidang
-                    </a>
-                </li>
-                <li class="{{ Route::is('admin.notifikasi.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.notifikasi.index') }}">
-                        <i class="bi bi-envelope"></i> Log Notifikasi
-                    </a>
-                </li>
-                <li class="{{ Route::is('admin.laporan.*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.laporan.index') }}">
-                        <i class="bi bi-file-earmark-bar-graph"></i> Laporan Kehadiran
-                    </a>
-                </li>
+                @if(in_array(Auth::user()->role, ['admin', 'hakim']))
+                    <li class="{{ Route::is('admin.perkara.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.perkara.index') }}">
+                            <i class="bi bi-folder2-open"></i> Kelola Perkara
+                        </a>
+                    </li>
+                    <li class="{{ Route::is('admin.jadwal-sidang.*') || Route::is('admin.pihak-sidang.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.jadwal-sidang.index') }}">
+                            <i class="bi bi-calendar3"></i> Jadwal Sidang
+                        </a>
+                    </li>
+                    <li class="{{ Route::is('admin.ruang-sidang.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.ruang-sidang.index') }}">
+                            <i class="bi bi-door-closed"></i> Ruang Sidang
+                        </a>
+                    </li>
+                    <li class="{{ Route::is('admin.notifikasi.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.notifikasi.index') }}">
+                            <i class="bi bi-envelope"></i> Log Notifikasi
+                        </a>
+                    </li>
+                @endif
+
+                @if(in_array(Auth::user()->role, ['admin', 'hakim', 'ptsp']))
+                    <li class="{{ Route::is('admin.laporan.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.laporan.index') }}">
+                            <i class="bi bi-file-earmark-bar-graph"></i> Laporan Kehadiran
+                        </a>
+                    </li>
+                @endif
+
                 <li class="{{ Route::is('admin.daftar-hadir-hari-ini') ? 'active' : '' }}">
                     <a href="{{ route('admin.daftar-hadir-hari-ini') }}">
                         <i class="bi bi-person-check-fill"></i> Kehadiran Hari Ini
                     </a>
                 </li>
-                <li class="{{ Route::is('admin.integrasi-sipp.*') ? 'active' : '' }}">
-                    <a href="#sippSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Route::is('admin.integrasi-sipp.*') ? 'true' : 'false' }}" class="dropdown-toggle d-flex align-items-center justify-content-between w-100">
-                        <span class="d-flex align-items-center gap-2">
-                            <i class="bi bi-cloud-arrow-down"></i> Integrasi SIPP
-                        </span>
-                        <i class="bi bi-chevron-down small" style="transition: transform 0.2s;"></i>
-                    </a>
-                    <ul class="collapse list-unstyled submenu-list {{ Route::is('admin.integrasi-sipp.*') ? 'show' : '' }}" id="sippSubmenu" style="background: rgba(0,0,0,0.015);">
-                        <li class="{{ Route::is('admin.integrasi-sipp.*') && request()->get('tab') !== 'history' ? 'active' : '' }}">
-                            <a href="{{ route('admin.integrasi-sipp.index') }}">
-                                <i class="bi bi-arrow-right-short"></i> Sinkronisasi Jadwal
-                            </a>
-                        </li>
-                        <li class="{{ Route::is('admin.integrasi-sipp.*') && request()->get('tab') === 'history' ? 'active' : '' }}">
-                            <a href="{{ route('admin.integrasi-sipp.index') }}?tab=history">
-                                <i class="bi bi-arrow-right-short"></i> Riwayat Sinkronisasi
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+
+                @if(in_array(Auth::user()->role, ['admin', 'hakim']))
+                    <li class="{{ Route::is('admin.integrasi-sipp.*') ? 'active' : '' }}">
+                        <a href="#sippSubmenu" data-bs-toggle="collapse" aria-expanded="{{ Route::is('admin.integrasi-sipp.*') ? 'true' : 'false' }}" class="dropdown-toggle d-flex align-items-center justify-content-between w-100">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-arrow-down"></i> Integrasi SIPP
+                            </span>
+                            <i class="bi bi-chevron-down small" style="transition: transform 0.2s;"></i>
+                        </a>
+                        <ul class="collapse list-unstyled submenu-list {{ Route::is('admin.integrasi-sipp.*') ? 'show' : '' }}" id="sippSubmenu" style="background: rgba(0,0,0,0.015);">
+                            <li class="{{ Route::is('admin.integrasi-sipp.*') && request()->get('tab') !== 'history' ? 'active' : '' }}">
+                                <a href="{{ route('admin.integrasi-sipp.index') }}">
+                                    <i class="bi bi-arrow-right-short"></i> Sinkronisasi Jadwal
+                                </a>
+                            </li>
+                            <li class="{{ Route::is('admin.integrasi-sipp.*') && request()->get('tab') === 'history' ? 'active' : '' }}">
+                                <a href="{{ route('admin.integrasi-sipp.index') }}?tab=history">
+                                    <i class="bi bi-arrow-right-short"></i> Riwayat Sinkronisasi
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
+                @if(Auth::user()->role === 'admin')
+                    <li class="{{ Route::is('admin.users.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.users.index') }}">
+                            <i class="bi bi-people-fill"></i> Kelola Akun
+                        </a>
+                    </li>
+                @endif
             </ul>
 
             <div class="px-4 py-3 border-top mt-auto" style="border-top: 1px solid rgba(255, 255, 255, 0.07) !important; background: transparent;">
@@ -148,9 +165,18 @@
                                 <span class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 0.9rem;">
                                     {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                                 </span>
-                                <span class="d-none d-md-inline fw-medium" style="color: var(--text-primary);">{{ Auth::user()->name ?? 'Administrator' }}</span>
+                                <div class="d-none d-md-flex flex-column text-start">
+                                    <span class="fw-medium lh-1" style="color: var(--text-primary);">{{ Auth::user()->name ?? 'Administrator' }}</span>
+                                    <span class="small text-muted mt-1" style="font-size: 0.75rem;">{{ Auth::user()->role_label }}</span>
+                                </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2 rounded-3" aria-labelledby="userDropdown" style="background-color: var(--bg-secondary);">
+                                <li>
+                                    <div class="px-3 py-2 border-bottom mb-1">
+                                        <span class="d-block fw-bold text-truncate" style="max-width: 180px;">{{ Auth::user()->name }}</span>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary mt-1" style="font-size: 0.7rem;">{{ Auth::user()->role_label }}</span>
+                                    </div>
+                                </li>
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('profile.edit') }}">
                                         <i class="bi bi-person text-secondary"></i> Profil Saya

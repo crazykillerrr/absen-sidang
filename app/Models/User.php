@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -42,4 +43,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Label readable untuk Peran User.
+     */
+    public function getRoleLabelAttribute(): string
+    {
+        return match($this->role) {
+            'admin' => 'Super Admin',
+            'hakim' => 'Hakim',
+            'jsp_pp' => 'JSP / PP',
+            'ptsp' => 'PTSP',
+            default => ucfirst($this->role ?? 'User'),
+        };
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isHakim(): bool
+    {
+        return $this->role === 'hakim';
+    }
+
+    public function isJspPp(): bool
+    {
+        return $this->role === 'jsp_pp';
+    }
+
+    public function isPtsp(): bool
+    {
+        return $this->role === 'ptsp';
+    }
 }

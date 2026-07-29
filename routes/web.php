@@ -45,7 +45,7 @@ Route::get('/', function () {
 
 // Rute Absensi Publik (Tanpa Login)
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('public.absensi');
-Route::post('/absensi', [AbsensiController::class, 'store'])->name('public.absensi.store');
+Route::post('/absensi', [AbsensiController::class, 'store'])->middleware('throttle:10,1')->name('public.absensi.store');
 Route::get('/absensi/hearing-details', [AbsensiController::class, 'getHearingDetails'])->name('public.absensi.hearing-details');
 Route::get('/absensi/success', [AbsensiController::class, 'success'])->name('public.absensi.success');
 
@@ -54,48 +54,59 @@ Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified']);
 
+use App\Http\Controllers\Admin\UserController;
+
 // Rute Admin Panel (Wajib Login & Verifikasi)
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData'])->name('dashboard.data');
+    // 1. Rute yang dapat diakses oleh SEMUA ROLE (admin, hakim, jsp_pp, ptsp)
+    Route::middleware('role:admin,hakim,jsp_pp,ptsp')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData'])->name('dashboard.data');
+        Route::get('daftar-hadir-hari-ini', [LaporanController::class, 'hariIni'])->name('daftar-hadir-hari-ini');
+    });
 
+    // 2. Rute Detail Kehadiran / Laporan (admin, hakim, ptsp)
+    Route::middleware('role:admin,hakim,ptsp')->group(function () {
+        Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('laporan-data', [LaporanController::class, 'getLaporanData'])->name('laporan.data');
+        Route::get('laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
+        Route::get('laporan/export-excel', [LaporanController::class, 'exportExcel'])->name('laporan.export-excel');
+    });
 
-    // CRUD Ruang Sidang
-    Route::resource('ruang-sidang', RuangSidangController::class);
+    // 3. Rute Fitur Operasional (admin, hakim)
+    Route::middleware('role:admin,hakim')->group(function () {
+        // CRUD Ruang Sidang
+        Route::resource('ruang-sidang', RuangSidangController::class);
 
-    // CRUD Perkara
-    Route::resource('perkara', PerkaraController::class);
+        // CRUD Perkara
+        Route::resource('perkara', PerkaraController::class);
 
-    // CRUD Jadwal Sidang
-    Route::resource('jadwal-sidang', JadwalSidangController::class);
-    Route::post('jadwal-sidang/{jadwal_sidang}/panggil', [JadwalSidangController::class, 'panggil'])->name('jadwal-sidang.panggil');
-    Route::post('jadwal-sidang/{jadwal_sidang}/status', [JadwalSidangController::class, 'updateStatus'])->name('jadwal-sidang.update-status');
+        // CRUD Jadwal Sidang
+        Route::resource('jadwal-sidang', JadwalSidangController::class);
+        Route::post('jadwal-sidang/{jadwal_sidang}/panggil', [JadwalSidangController::class, 'panggil'])->name('jadwal-sidang.panggil');
+        Route::post('jadwal-sidang/{jadwal_sidang}/status', [JadwalSidangController::class, 'updateStatus'])->name('jadwal-sidang.update-status');
 
-    // CRUD Pihak Berperkara per Jadwal Sidang
-    Route::get('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'index'])->name('pihak-sidang.index');
-    Route::get('jadwal-sidang/{jadwal_sidang}/pihak-data', [PihakSidangController::class, 'getAttendanceData'])->name('pihak-sidang.data');
-    Route::get('jadwal-sidang/{jadwal_sidang}/pihak/create', [PihakSidangController::class, 'create'])->name('pihak-sidang.create');
-    Route::post('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'store'])->name('pihak-sidang.store');
-    Route::get('pihak-sidang/{pihak_sidang}/edit', [PihakSidangController::class, 'edit'])->name('pihak-sidang.edit');
-    Route::put('pihak-sidang/{pihak_sidang}', [PihakSidangController::class, 'update'])->name('pihak-sidang.update');
-    Route::delete('pihak-sidang/{pihak_sidang}', [PihakSidangController::class, 'destroy'])->name('pihak-sidang.destroy');
+        // CRUD Pihak Berperkara per Jadwal Sidang
+        Route::get('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'index'])->name('pihak-sidang.index');
+        Route::get('jadwal-sidang/{jadwal_sidang}/pihak-data', [PihakSidangController::class, 'getAttendanceData'])->name('pihak-sidang.data');
+        Route::get('jadwal-sidang/{jadwal_sidang}/pihak/create', [PihakSidangController::class, 'create'])->name('pihak-sidang.create');
+        Route::post('jadwal-sidang/{jadwal_sidang}/pihak', [PihakSidangController::class, 'store'])->name('pihak-sidang.store');
+        Route::get('pihak-sidang/{pihak_sidang}/edit', [PihakSidangController::class, 'edit'])->name('pihak-sidang.edit');
+        Route::put('pihak-sidang/{pihak_sidang}', [PihakSidangController::class, 'update'])->name('pihak-sidang.update');
+        Route::delete('pihak-sidang/{pihak_sidang}', [PihakSidangController::class, 'destroy'])->name('pihak-sidang.destroy');
 
-    // Monitoring Notifikasi WhatsApp
-    Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+        // Monitoring Notifikasi WhatsApp
+        Route::get('notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
 
-    // Laporan
-    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('laporan-data', [LaporanController::class, 'getLaporanData'])->name('laporan.data');
-    Route::get('laporan/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
-    Route::get('laporan/export-excel', [LaporanController::class, 'exportExcel'])->name('laporan.export-excel');
+        // Integrasi SIPP
+        Route::get('integrasi-sipp', [\App\Http\Controllers\Admin\SippController::class, 'index'])->name('integrasi-sipp.index');
+        Route::post('integrasi-sipp/sync', [\App\Http\Controllers\Admin\SippController::class, 'syncNow'])->name('integrasi-sipp.sync');
+    });
 
-    // Integrasi SIPP
-    Route::get('integrasi-sipp', [\App\Http\Controllers\Admin\SippController::class, 'index'])->name('integrasi-sipp.index');
-    Route::post('integrasi-sipp/sync', [\App\Http\Controllers\Admin\SippController::class, 'syncNow'])->name('integrasi-sipp.sync');
-
-    // Daftar Hadir Hari Ini
-    Route::get('daftar-hadir-hari-ini', [LaporanController::class, 'hariIni'])->name('daftar-hadir-hari-ini');
+    // 4. Rute Khusus SUPER ADMIN (admin)
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('users', UserController::class);
+    });
 });
 
 // Profile Admin
